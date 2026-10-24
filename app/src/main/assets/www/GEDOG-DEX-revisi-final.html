@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEDOG-DEX - Pemindai Batik Tuban</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8C2D19; /* Terracotta Batik */
+            --accent: #D4A359;  /* Emas Kunyit */
+            --dark: #2B1810;    /* Cokelat Tua Gedog */
+            --bg: #FAFAF7;      /* Krem Halus */
+            --card-bg: #FFFFFF;
+            --error: #c0392b;
+            --success: #27ae60;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--dark); 
+            padding-bottom: 85px;
+            background-image: radial-gradient(#8C2D19 0.5px, transparent 0.5px), radial-gradient(#8C2D19 0.5px, #FAFAF7 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        header { 
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: #FFF; 
+            padding: 20px 15px 15px; 
+            text-align: center; 
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(140, 45, 25, 0.2);
+        }
+
+        header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #FFF; }
+        header p { font-size: 0.75rem; color: var(--accent); margin-top: 3px; letter-spacing: 2px; text-transform: uppercase; }
+
+        .container { padding: 10px 8px; }
+
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 16px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+            border: 1px solid rgba(212, 163, 89, 0.25);
+        }
+
+        .card h3 { font-family: 'Playfair Display', serif; color: var(--primary); font-size: 1.15rem; margin-bottom: 6px; }
+
+        .couple-welcome-card {
+            background: linear-gradient(135deg, #2B1810 0%, #8C2D19 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(140, 45, 25, 0.25);
+            border: 1px solid var(--accent);
+        }
+
+        .couple-avatar-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--accent);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .couple-text { flex: 1; margin-left: 12px; }
+        .couple-text h4 { font-family: 'Playfair Display', serif; color: var(--accent); font-size: 1.05rem; }
+        .couple-text p { font-size: 0.78rem; color: #F5EBE0; line-height: 1.3; }
+
+        .edu-banner {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fffaf1 0%, #f2dfc5 48%, #ead0a9 100%);
+            border: 1px solid rgba(140, 45, 25, 0.16);
+            border-left: 5px solid var(--primary);
+            padding: 18px 16px;
+            border-radius: 18px;
+            margin-top: 16px;
+            margin-bottom: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 8px 22px rgba(89, 48, 24, 0.10);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .edu-banner:active { transform: scale(.985); }
+        .edu-banner::after {
+            content: '✦';
+            position: absolute;
+            right: 48px;
+            bottom: -26px;
+            z-index: -1;
+            font-size: 108px;
+            line-height: 1;
+            color: rgba(140, 45, 25, .07);
+            transform: rotate(-12deg);
+        }
+        .edu-banner .edu-kicker {
+            display: inline-block;
+            font-size: .66rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #8c2d19;
+            margin-bottom: 6px;
+        }
+        .edu-banner .edu-heading {
+            display: block;
+            color: #672719;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.12rem;
+            line-height: 1.25;
+            margin-bottom: 6px;
+        }
+        .edu-banner .edu-description {
+            font-size: .8rem;
+            line-height: 1.55;
+            color: #665246;
+            margin: 0;
+            max-width: 290px;
+        }
+        .edu-banner .edu-arrow {
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            background: linear-gradient(135deg, #8c2d19, #642013);
+            box-shadow: 0 4px 10px rgba(100, 32, 19, .2);
+            font-size: 1.1rem;
+        }
+
+        /* Tampilan khusus fitur AI Scanner */
+        .scanner-hero { position:relative; overflow:hidden; margin: -2px -2px 16px; padding: 21px 19px; border-radius: 18px; color: #fffaf1; background: radial-gradient(circle at 92% 8%, rgba(255,221,161,.25), transparent 30%), linear-gradient(135deg, #482015, #8c2d19 62%, #bd7940); box-shadow:0 10px 22px rgba(83,34,19,.16); }
+        .scanner-hero::after { content:'✳'; position:absolute; right:17px; bottom:-24px; font-size:6.5rem; line-height:1; color:rgba(255,245,220,.10); transform:rotate(-12deg); pointer-events:none; }
+        .scanner-hero > * { position:relative; z-index:1; }
+        .scanner-hero .scanner-eyebrow { padding:5px 8px; border:1px solid rgba(255,245,220,.3); border-radius:99px; background:rgba(255,255,255,.08); }
+        .scanner-hero .scanner-eyebrow { display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.13em; opacity:.82; margin-bottom:7px; }
+        .scanner-hero h3 { color:#fffaf1; margin:0 0 6px; font-size:1.22rem; }
+        .scanner-hero p { margin:0; font-size:.8rem; line-height:1.55; color:#fff0df; }
+        .scanner-step-label { display:flex; align-items:center; gap:7px; font-size:.8rem; font-weight:800; color:var(--dark); margin:14px 0 8px; }
+        .scanner-step-number { display:inline-flex; align-items:center; justify-content:center; width:23px; height:23px; flex:0 0 23px; border-radius:50%; background:#f0e0c7; color:#7a2b19; }
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            height: 290px;
+            background: radial-gradient(ellipse at center, #38302b 0%, #15110f 78%);
+            border-radius: 19px;
+            overflow: hidden;
+            border: 2px solid #d4a359;
+            outline: 5px solid rgba(212,163,89,.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 0 5px rgba(255,255,255,.025), 0 8px 18px rgba(50,20,10,.12);
+        }
+        .scanner-container::after { content:'Arahkan motif ke dalam bingkai'; position:absolute; bottom:9px; left:0; right:0; text-align:center; color:rgba(255,255,255,.72); font-size:.68rem; pointer-events:none; text-shadow:0 1px 3px #000; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .scan-overlay { border:2px solid rgba(255,220,160,.75); border-radius:14px; inset:18px; }
+        .scan-line { box-shadow:0 0 10px rgba(255,70,40,.65); }
+        .scan-action { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:13px; }
+        .scan-action #btn-ai-scan { grid-column:1 / -1; min-height:46px; font-weight:800; letter-spacing:.01em; box-shadow:0 5px 12px rgba(140,45,25,.16); }
+        .scan-action #btn-stop-camera:disabled { opacity:.48; cursor:not-allowed; }
+        .scan-action .btn-secondary { min-height:42px; }
+        .scan-action button { margin-top:0; flex:1; }
+        .scan-note { display:flex; gap:9px; align-items:flex-start; padding:10px 11px; margin-top:12px; border-radius:10px; background:linear-gradient(135deg,#faf4e9,#f4e8d6); border:1px solid #ead9bd; color:#6b5548; font-size:.76rem; line-height:1.5; }
+        .scan-result-card { margin-top:13px; padding:15px; border:1px solid rgba(212,163,89,.7); border-radius:14px; background:linear-gradient(180deg,#fffdf8,#fff6e7); box-shadow:0 6px 16px rgba(70,35,15,.06); }
+        .scan-result-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+        .scan-result-kicker { font-size:.68rem; color:#8c2d19; font-weight:800; letter-spacing:.1em; }
+        .scan-score { font-size:1.7rem; line-height:1.2; font-weight:800; color:#702818; margin:9px 0 7px; }
+        .scan-score-track { height:9px; border-radius:99px; overflow:hidden; background:#eadfce; }
+        .scan-score-fill { width:0%; height:100%; border-radius:99px; background:linear-gradient(90deg,#d8a34e,#8c2d19); transition:width .35s ease; }
+        .scan-conclusion { padding:10px 11px; margin-top:11px; border-radius:10px; background:#f4ead8; color:#5c3021; font-size:.84rem; line-height:1.5; }
+        .scan-conclusion strong { display:block; margin-bottom:3px; }
+
+        .scan-overlay {
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 2px dashed rgba(212, 163, 89, 0.7);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff3333, transparent);
+            box-shadow: 0 0 8px #ff3333;
+            animation: scanAnim 2.5s infinite ease-in-out;
+        }
+
+        @keyframes scanAnim {
+            0% { top: 10%; }
+            50% { top: 90%; }
+            100% { top: 10%; }
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--primary) 0%, #6e2111 100%); 
+            color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; 
+            font-weight: 600; font-size: 0.95rem; margin-top: 10px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(140, 45, 25, 0.25);
+        }
+
+        .btn-secondary {
+            background: #f0ece1; color: var(--dark); border: 1px solid var(--accent);
+            padding: 10px; width: 100%; border-radius: 8px; font-size: 0.85rem; margin-top: 8px; font-weight: 600; cursor: pointer;
+        }
+
+        .error-box {
+            background: #FDEDEC;
+            border-left: 4px solid var(--error);
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #78281F;
+            font-size: 0.85rem;
+        }
+
+        .bottom-batik-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+            border: 1px solid rgba(212, 163, 89, 0.3);
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .bottom-batik-img { 
+            width: 100%; 
+            height: 190px; 
+            object-fit: cover; 
+            display: block; 
+            background-color: #eee;
+        }
+
+        .bottom-batik-info { padding: 12px 15px; background: #FFFDF9; }
+        .bottom-batik-info h5 { font-family: 'Playfair Display', serif; color: var(--primary); font-size: 0.95rem; }
+        .bottom-batik-info p { font-size: 0.75rem; color: #666; margin-top: 2px; }
+
+        .card-full-height {
+            min-height: calc(100vh - 170px);
+            margin-bottom: 0px;
+            padding: 18px 12px;
+        }
+
+        .gedog-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+            line-height: 1.35;
+            font-weight: 700;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            font-size: 0.88rem;
+            margin-bottom: 12px;
+            outline: none;
+            background: #FFFDF9;
+        }
+
+        .gedog-scroll-container {
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .gedog-item {
+            background: #FFFDF9;
+            border: 1px solid rgba(212, 163, 89, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .gedog-item h4 {
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+
+        .item-foto {
+            width: 100%;
+            height: 185px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(212, 163, 89, 0.25);
+            display: block;
+            background-color: #f0ece1;
+        }
+
+        .item-teks-lengkap {
+            font-size: 0.82rem;
+            color: #333;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .badge-pewarna {
+            display: inline-block;
+            background: rgba(212, 163, 89, 0.2);
+            color: var(--dark);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+
+        /* Tampilan informasi seperti folder yang bisa dibuka */
+        .info-folder {
+            background: #fffdf8;
+            border: 1px solid rgba(212, 163, 89, 0.55);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 9px rgba(43, 24, 16, 0.05);
+        }
+        .info-folder summary {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 13px 14px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #fffaf0, #f5ebdf);
+            min-height: 68px;
+        }
+        .info-folder summary::-webkit-details-marker { display: none; }
+        .info-folder summary::after {
+            content: '＋';
+            margin-left: auto;
+            color: var(--primary);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        .info-folder[open] summary::after { content: '−'; }
+        .folder-icon {
+            flex: 0 0 42px;
+            width: 42px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 7px;
+            background: #f0d7a8;
+            font-size: 1.35rem;
+        }
+        .folder-heading { min-width: 0; }
+        .folder-heading strong {
+            display: block;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: .98rem;
+            line-height: 1.3;
+        }
+        .folder-heading small { display: block; color: #82715e; font-size: .7rem; margin-top: 3px; }
+        .folder-content { padding: 13px; border-top: 1px dashed rgba(212, 163, 89, .6); }
+        .folder-content .item-foto { margin-bottom: 12px; }
+        #gedogList .gedog-item.info-folder { padding: 0; border-radius: 13px; }
+        #gedogList .info-folder summary { min-height: 74px; }
+        #gedogList .folder-content { background: #fffefa; }
+        #gedogList .folder-content p { margin: 0 0 10px; }
+        #gedogList .folder-content p:last-child { margin-bottom: 0; }
+        #gedogList .folder-content a { color: #8C2D19; font-weight: 700; text-decoration: underline; }
+
+        .game-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(212, 163, 89, 0.3);
+        }
+
+        .poin-box-kanan-atas {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1.5px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(140, 45, 25, 0.2);
+        }
+
+        .lobby-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .lobby-card {
+            background: #FFFDF9;
+            border: 1.5px solid rgba(212, 163, 89, 0.5);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: transform 0.15s, border-color 0.15s;
+        }
+
+        .lobby-card:active {
+            transform: scale(0.98);
+            border-color: var(--primary);
+        }
+
+        .lobby-card h4 {
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lobby-card p {
+            font-size: 0.8rem;
+            color: #555;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .reward-badge {
+            display: inline-block;
+            background: rgba(212, 163, 89, 0.2);
+            color: var(--dark);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .puzzle-board {
+            width: fit-content;
+            display: grid;
+            grid-template-columns: repeat(3, 86px);
+            grid-template-rows: repeat(5, 68px);
+            gap: 2px;
+            margin: 12px auto;
+            background: var(--dark);
+            border: 3px solid var(--accent);
+            border-radius: 12px;
+            padding: 3px;
+            box-shadow: 0 4px 12px rgba(43, 24, 16, 0.2);
+        }
+
+        .puzzle-tile {
+            width: 86px;
+            height: 68px;
+            background-size: 258px 340px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: transform 0.15s, border 0.15s;
+        }
+
+        .puzzle-tile.selected {
+            border: 3px solid #ffcc00 !important;
+            transform: scale(0.92);
+            box-shadow: 0 0 10px #ffcc00;
+        }
+
+        .puzzle-preview-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+            background: #FFF;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px dashed var(--accent);
+        }
+
+        .puzzle-preview-img {
+            width: 48px;
+            height: 64px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--accent);
+        }
+
+        .game-question {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 16px;
+            line-height: 1.45;
+            min-height: 48px;
+        }
+
+        .game-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-option {
+            background: #FFFFFF;
+            border: 1.5px solid rgba(140, 45, 25, 0.3);
+            color: var(--dark);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .btn-option:active { transform: scale(0.98); }
+
+        .btn-option.correct {
+            background: #d4edda !important;
+            border-color: var(--success) !important;
+            color: #155724 !important;
+        }
+
+        .btn-option.wrong {
+            background: #f8d7da !important;
+            border-color: var(--error) !important;
+            color: #721c24 !important;
+        }
+
+        .game-feedback {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        .nav-bar { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            width: 100%; 
+            background: #FFFFFF; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center;
+            padding: 10px 14px; 
+            border-top-left-radius: 16px; 
+            border-top-right-radius: 16px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            z-index: 99;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-bar::-webkit-scrollbar { display: none; }
+
+        .nav-item { 
+            flex: 0 0 auto;
+            text-align: center; 
+            font-size: 0.75rem; 
+            color: #888; 
+            cursor: pointer; 
+            font-weight: 600; 
+            min-width: 58px;
+        }
+
+        .nav-item div { font-size: 1.25rem; margin-bottom: 2px; }
+        .active { color: var(--primary); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GEDOG-DEX</h1>
+        <p id="header-subtitle">Mengenal Keunikan Tuban</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- HALAMAN BERANDA -->
+        <div id="page-beranda">
+            <div class="card" style="margin-top:0; margin-bottom:14px;">
+                <h3 style="margin-bottom:4px;">✨ Sugeng Rawuh ing Tuban</h3>
+                <p id="salam-waktu" style="font-size:0.95rem;font-weight:700;color:var(--primary);margin:5px 0 8px;">Sugeng Enjing 🌅</p>
+                <p style="font-size:0.88rem;line-height:1.6;color:#555;margin-bottom:0;">Selamat datang di GEDOG-DEX. Temukan kekayaan budaya, wisata, kuliner, kesenian, dan alam Kabupaten Tuban, lalu ikut menjaga warisan ini agar tetap dikenal generasi berikutnya.</p>
+            </div>
+            <div class="bottom-batik-card">
+                <img id="batik-utama-img" src="./mbg.jpg" alt="Mahakarya Batik Gedog Tuban" class="bottom-batik-img">
+                <div class="bottom-batik-info">
+                    <h5>Mahakarya Batik Gedog Tuban</h5>
+                    <p>Keindahan tenun tangan & canting cantrik warisan leluhur</p>
+                </div>
+            </div>
+            <div class="edu-banner" onclick="bukaEdukasi()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();bukaEdukasi();}">
+                <div>
+                    <span class="edu-kicker">Jelajahi Warisan Lokal</span>
+                    <strong class="edu-heading">Mengenal Tuban</strong>
+                    <p class="edu-description">Temukan cerita budaya, pesona alam, kuliner khas, kesenian, dan cara ikut melestarikan warisan Tuban.</p>
+                </div>
+                <span class="edu-arrow" aria-hidden="true">➜</span>
+            </div>
+        </div>
+
+        <!-- HALAMAN PEMINDAI MOTIF -->
+        <div id="page-scan" class="hidden">
+            <div class="card">
+                <div class="scanner-hero">
+                    <span class="scanner-eyebrow">GEDOG-DEX • SMART SCANNER</span>
+                    <h3>Kenali Motif Batik</h3>
+                    <p>Arahkan kamera ke kain batik untuk membandingkan pola visualnya dengan referensi batik yang tersedia pada prototipe scanner.</p>
+                </div>
+                <div class="scanner-step-label"><span class="scanner-step-number">1</span> Aktifkan kamera</div>
+                <div class="scanner-container">
+                    <video id="webcam" autoplay playsinline muted></video>
+                    <div class="scan-overlay"><div class="scan-line"></div></div>
+                </div>
+                <div class="scan-action">
+                    <button class="btn-secondary" onclick="bukaKamera()">📷 Aktifkan Kamera</button>
+                    <button class="btn-secondary" id="btn-stop-camera" onclick="matikanKamera()" disabled>⏹ Matikan Kamera</button>
+                    <button class="btn-primary" id="btn-ai-scan" onclick="pindaiBatikAI()">⌕ Pindai Motif</button>
+                </div>
+                <div class="scan-note"><span>💡</span><span>Tips: isi bingkai dengan motif, jaga kain tetap rata, dan gunakan cahaya yang cukup agar pencocokan visual lebih baik.</span></div>
+                <div id="error-result" class="error-box hidden">
+                    <b style="color: var(--error); font-size: 0.95rem;">Motif Belum Dikenali</b>
+                    <p id="ai-error-text" style="margin-top: 4px; line-height: 1.5;">Pola yang tertangkap belum cukup mirip dengan referensi batik yang tersedia. Coba dekatkan kamera, ratakan kain, dan pastikan pencahayaan cukup.</p>
+                    <p id="ai-error-score" style="margin-top:7px;font-weight:700;"></p>
+                </div>
+                <div id="ai-scan-status" class="hidden" style="margin-top:12px;padding:12px;border-radius:10px;background:#f7f1e8;font-size:.85rem;line-height:1.5;"></div>
+                <div id="ai-scan-result" class="scan-result-card hidden">
+                    <div class="scan-result-top"><span class="scan-result-kicker">HASIL PEMINDAIAN AI</span><span style="font-size:1.35rem;">🔎</span></div>
+                    <h4 id="ai-result-title" style="margin:7px 0;color:var(--dark);font-size:1.18rem;">Batik</h4>
+                    <div class="scan-score" id="ai-score-number">0%</div>
+                    <div class="scan-score-track"><div class="scan-score-fill" id="ai-score-fill"></div></div>
+                    <div class="scan-conclusion"><strong id="ai-conclusion-title">Kesimpulan</strong><span id="ai-conclusion-text"></span></div>
+                    <p style="font-size:.72rem;line-height:1.5;margin-top:10px;color:#66594e;">Skor ini adalah perkiraan kemiripan fitur visual terhadap satu gambar referensi, bukan persentase kepastian atau akurasi model.</p>
+                    <button class="btn-secondary" style="margin-top:10px;" onclick="ulangPindaiAI()">↻ Pindai Ulang</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HALAMAN EDUKASI TUBAN -->
+        <div id="page-edukasi" class="card hidden">
+            <button onclick="tutupEdukasi()" class="btn-secondary" style="width: auto; padding: 6px 12px; margin-bottom: 12px;">⬅ Kembali ke Beranda</button>
+            <h3>Mengenal Keunikan dan Kelestarian yang Ada di Tuban</h3>
+            <hr style="border: 0.5px solid #eee; margin: 10px 0;">
+            <p style="font-size:0.88rem;line-height:1.65;color:#333;">Kabupaten Tuban di pesisir utara Jawa Timur memiliki warisan budaya yang terbentuk dari pertemuan tradisi Jawa, kehidupan pesisir, jalur perdagangan, dan perkembangan Islam. Keunikan ini terlihat dalam kain, kesenian, kuliner, tempat bersejarah, serta bentang alamnya.</p>
+
+            <section class="gedog-item"><h4>🧵 1. Batik Gedog: Kain dari Tradisi Menenun</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Batik Gedog dikenal karena proses tradisionalnya yang menggabungkan pembuatan benang, penenunan kain, dan pembatikan. Bunyi alat tenun kayu yang terdengar seperti “dog-dog” sering dikaitkan dengan nama Gedog. Kain bertekstur khas ini menjadi penanda keterampilan perajin, terutama di kawasan Kecamatan Kerek. Motif dan warna dapat terinspirasi dari lingkungan, tumbuhan, hewan, serta kehidupan masyarakat.</p><p style="font-size:0.85rem;line-height:1.6;color:#444;"><b>Upaya pelestarian:</b> belajar mengenali motif, membeli produk dari perajin lokal, menggunakan batik dalam kegiatan sekolah atau acara budaya, serta menghargai proses kerja yang membutuhkan ketelatenan.</p></section>
+
+            <section class="gedog-item"><h4>🎨 2. Ragam Motif dan Makna Batik</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Motif batik Tuban memiliki ragam bentuk dan karakter. Beberapa motif terinspirasi dari alam, seperti tumbuhan dan hewan, sementara motif lain menampilkan pola geometris atau susunan hias yang berulang. Makna motif dapat berbeda menurut perajin, keluarga, dan konteks pemakaiannya; karena itu, cerita dari pembatik setempat merupakan sumber penting untuk memahami maknanya.</p></section>
+
+            <section class="gedog-item"><h4>🏛️ 3. Tuban sebagai Kota Pesisir dan Sejarah</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Letak Tuban di pesisir utara Jawa menjadikannya bagian dari jalur pergerakan manusia dan barang sejak masa lampau. Kehidupan pelabuhan, perdagangan, dan perjumpaan budaya ikut membentuk karakter masyarakatnya. Cerita sejarah lokal dapat ditelusuri melalui bangunan bersejarah, makam tokoh, tradisi masyarakat, museum, dan penuturan warga.</p></section>
+
+            <section class="gedog-item"><h4>🕌 4. Warisan Religi dan Ziarah</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Tuban dikenal sebagai salah satu tujuan ziarah di Jawa Timur. Kompleks makam Sunan Bonang dan Masjid Agung Tuban menjadi bagian penting dari lanskap sejarah dan kehidupan keagamaan kota. Pengunjung sebaiknya menjaga ketenangan, berpakaian sopan, menghormati warga dan peziarah lain, serta menjaga kebersihan kawasan.</p></section>
+
+            <section class="gedog-item"><h4>🎭 5. Kesenian dan Tradisi Lokal</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Kesenian tradisional, pertunjukan rakyat, musik, tari, dan tradisi hajatan menjadi ruang bagi masyarakat untuk mewariskan nilai serta cerita lokal. Bentuk pertunjukan dan jadwal kegiatan dapat berbeda antarwilayah. Dokumentasi yang sopan, belajar langsung dari pelaku seni, dan memberi ruang bagi seniman lokal membantu menjaga keberlanjutannya.</p></section>
+
+            <section class="gedog-item"><h4>🥘 6. Kuliner Khas Tuban</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Kuliner Tuban dipengaruhi oleh kehidupan pesisir dan hasil bumi setempat. Masyarakat mengenal aneka olahan ikan, makanan tradisional, jajanan pasar, serta sajian yang diwariskan dalam keluarga. Resep dapat memiliki variasi menurut desa dan pembuatnya. Menjaga resep keluarga, memperkenalkan jajanan lokal, dan mendukung usaha kecil merupakan cara sederhana merawat kekayaan kuliner.</p></section>
+
+            <section class="gedog-item"><h4>🌊 7. Pesisir, Laut, dan Kehidupan Nelayan</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Pantai utara menjadi bagian dari kehidupan sosial dan ekonomi Tuban. Laut menyediakan sumber pangan dan mata pencaharian, sekaligus membutuhkan perhatian terhadap keselamatan dan kelestarian. Pengunjung dapat berkontribusi dengan tidak membuang sampah, mengurangi plastik sekali pakai, mengikuti aturan setempat, serta menghargai pekerjaan nelayan.</p></section>
+
+            <section class="gedog-item"><h4>🌿 8. Alam, Goa, dan Ruang Hijau</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Bentang alam Tuban mencakup kawasan pantai, perbukitan kapur, goa, mata air, dan ruang hijau. Setiap lokasi memiliki karakter dan aturan kunjungan masing-masing. Saat berwisata, tetaplah berada di jalur yang aman, jangan mencoret batu atau dinding goa, tidak mengambil flora-fauna, dan membawa kembali sampah.</p></section>
+
+            <section class="gedog-item"><h4>🪨 9. Lanskap Karst dan Goa</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Kawasan batu kapur atau karst membentuk sebagian bentang alam Tuban. Goa dan formasi batu dapat menyimpan nilai geologi, ekologi, dan cerita lokal. Lingkungan semacam ini rentan terhadap kerusakan akibat vandalisme dan sampah, sehingga pengunjung perlu mengikuti arahan pengelola dan tidak merusak formasi alam.</p></section>
+
+            <section class="gedog-item"><h4>🧺 10. Kerajinan dan Keterampilan Warga</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Selain batik, keterampilan rumah tangga dan produk lokal mencerminkan kreativitas masyarakat. Kerajinan, olahan pangan, dan usaha kecil menyimpan pengetahuan yang sering dipelajari melalui praktik antargenerasi. Mendokumentasikan proses dengan izin, mencantumkan asal produk, dan membeli secara wajar dapat membantu para pelaku usaha.</p></section>
+
+            <section class="gedog-item"><h4>🌱 11. Tantangan Pelestarian</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Warisan lokal dapat menghadapi tantangan berupa berkurangnya minat generasi muda, perubahan cara produksi, kerusakan lingkungan, dan kurangnya dokumentasi. Pelestarian bukan berarti menolak perubahan, melainkan menjaga pengetahuan dan nilai penting sambil memberi ruang bagi inovasi yang menghormati tradisi.</p></section>
+
+            <section class="gedog-item"><h4>🤝 12. Apa yang Bisa Dilakukan Pelajar?</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Pelajar dapat mewawancarai perajin atau seniman dengan sopan, membuat poster atau video edukasi dengan izin, mengenakan dan mengenali produk lokal, mengikuti kegiatan kebersihan, tidak menyebarkan informasi yang belum diperiksa, serta mengajak teman mengunjungi tempat budaya secara bertanggung jawab. Tindakan kecil yang konsisten membantu warisan Tuban tetap dikenal.</p></section>
+
+            <section class="gedog-item"><h4>📌 13. Prinsip Wisata Bertanggung Jawab</h4><p style="font-size:0.85rem;line-height:1.6;color:#444;">Hormati adat dan aturan tempat, jaga kebersihan, tidak merusak atau mengambil benda dari lokasi, minta izin sebelum memotret orang atau proses kerja, dukung usaha warga, dan bagikan informasi secara akurat. Jika informasi sejarah atau tradisi berbeda antara sumber, tanyakan kepada pengelola, pelaku budaya, atau sumber lokal yang tepercaya.</p></section>
+        </div>
+
+        <!-- HALAMAN 2: SI GEDOG -->
+        <div id="page-gedog" class="card card-full-height hidden">
+            <h2 class="gedog-title">INILAH SI GEDOG YANG BERASAL DARI TUBAN✨✨</h2>
+            <input type="text" id="searchBatik" class="search-box" placeholder="🔍 Cari nama motif batik..." onkeyup="cariMotif()">
+
+            <p style="font-size:.82rem;line-height:1.55;color:#665548;margin:8px 0 14px;">Pilih folder motif untuk menjelajahi bentuk, inspirasi, cerita budaya, dan catatan sejarahnya. Makna motif bisa berbeda menurut perajin dan konteks pemakaian, jadi informasi yang belum pasti ditandai sebagai cerita atau kepercayaan yang berkembang di masyarakat.</p>
+            <div class="gedog-scroll-container" id="gedogList">
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🕊️</span><span class="folder-heading"><strong>Motif Burung Lokcan (Lok Chan)</strong><small>Burung hong/phoenix • jejak budaya pesisir</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: burung dan hiasan tumbuhan</span>
+                        <p><b>Gambaran motif:</b> Lokcan atau lok chan dikenal melalui ragam hias burung, yang kerap dikaitkan dengan burung hong/phoenix. Detail gambar, susunan, dan warna dapat berbeda pada tiap kain dan pengrajin.</p>
+                        <p><b>Latar budaya:</b> Tuban merupakan kawasan pesisir yang sejak lama menjadi ruang perjumpaan budaya. Motif burung hong pada Batik Gedog sering dijelaskan sebagai salah satu jejak pengaruh budaya Tiongkok yang berbaur dengan tradisi setempat.</p>
+                        <p><b>Makna:</b> Tafsir seperti kebebasan, keharmonisan, atau keberuntungan bisa dijumpai dalam penjelasan populer, tetapi tidak selalu menjadi makna baku untuk semua kain Lokcan. Sebaiknya makna spesifik dikonfirmasi kepada perajin atau pemilik motif.</p>
+                        <p><b>Keunikan:</b> Motif ini memperlihatkan bagaimana ragam hias dapat menyimpan jejak hubungan antarkebudayaan, bukan hanya berfungsi sebagai hiasan.</p>
+                        <p><b>Sumber:</b> <a href="https://tubankab.go.id/entry/kemenperin-dan-ybi-gelar-pameran-bangga-berbatik-batik-gedog-tuban-jadi-ikon-hbn-2024" target="_blank" rel="noopener">Pemkab Tuban — Batik Gedog sebagai ikon HBN 2024</a></p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🌿</span><span class="folder-heading"><strong>Motif Ganggeng</strong><small>Inspirasi ganggang • pola berulang</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: bentuk menyerupai ganggang/sulur</span>
+                        <p><b>Gambaran motif:</b> Nama Ganggeng dikaitkan dengan ganggang atau tumbuhan air. Bentuknya dapat disusun berulang sehingga menghasilkan alur visual yang mengalir pada kain.</p>
+                        <p><b>Inspirasi:</b> Motif ini menjadi contoh kedekatan ragam hias Batik Gedog dengan lingkungan dan tumbuhan yang dikenal masyarakat.</p>
+                        <p><b>Makna dan pemakaian:</b> Sebuah penelitian tentang motif Batik Gedog mencatat Ganggeng sebagai salah satu motif yang digunakan dalam konteks busana ritual pernikahan. Ada pula tafsir yang menghubungkannya dengan umur panjang karena pola yang tampak berkesinambungan; tafsir tersebut merupakan penjelasan budaya, bukan arti tunggal yang berlaku pada semua versi.</p>
+                        <p><b>Keunikan:</b> Pola tumbuhan yang berulang memberi kesan gerak dan kesinambungan. Perhatikan bagaimana garis dan isen-isen kecil mengisi bidang kain.</p>
+                        <p><b>Sumber:</b> <a href="https://ejournal.unesa.ac.id/index.php/jurnal-pendidikan-kewarganegaraa/article/view/21959" target="_blank" rel="noopener">Penelitian UNESA tentang makna motif Batik Gedog</a></p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🌼</span><span class="folder-heading"><strong>Motif Kembang Kates</strong><small>Ragam hias flora • bunga pepaya</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: bentuk bunga/tumbuhan</span>
+                        <p><b>Gambaran motif:</b> Nama Kembang Kates merujuk pada bunga pepaya. Dalam ragam hias flora, bentuk tumbuhan dapat disederhanakan atau diulang agar sesuai dengan bidang kain tenun yang kemudian dibatik.</p>
+                        <p><b>Inspirasi:</b> Motif ini sejalan dengan kecenderungan Batik Gedog yang mengambil ide dari lingkungan, hasil bumi, dan tumbuhan yang dekat dengan kehidupan sehari-hari.</p>
+                        <p><b>Makna:</b> Kesederhanaan, ketulusan, atau kebermanfaatan kadang digunakan sebagai tafsir edukatif untuk motif tumbuhan, tetapi belum tentu merupakan filosofi tradisional yang terdokumentasi khusus untuk setiap versi Kembang Kates.</p>
+                        <p><b>Keunikan:</b> Nama motif yang dekat dengan tanaman sehari-hari menunjukkan bahwa inspirasi seni dapat berasal dari hal-hal sederhana di sekitar perajin.</p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🌀</span><span class="folder-heading"><strong>Motif Unyeng-Unyeng</strong><small>Susunan berpusar • ragam hias geometris</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: bentuk melingkar atau berpusar</span>
+                        <p><b>Gambaran motif:</b> Sebutan Unyeng-Unyeng mengarah pada bentuk pusaran atau lingkaran berpusat. Bentuk dan susunannya dapat bervariasi, tergantung rancangan pembatik.</p>
+                        <p><b>Karakter visual:</b> Pengulangan bentuk yang berpusat dapat menjadi titik perhatian di antara motif lain pada kain. Pada Batik Gedog, unsur geometris sering dipadukan dengan bentuk flora atau fauna.</p>
+                        <p><b>Makna:</b> Pusat kehidupan, fokus, atau kesatuan merupakan kemungkinan tafsir simbolis, bukan makna baku yang dapat dipastikan untuk semua kain bernama Unyeng-Unyeng. Cerita dari perajin menjadi rujukan terbaik untuk versi tertentu.</p>
+                        <p><b>Keunikan:</b> Motif ini cocok diamati dari cara garis berputar, pengulangan bentuk, dan keseimbangan ruang di sekitarnya.</p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🔷</span><span class="folder-heading"><strong>Motif Gringsing</strong><small>Motif tradisional • perlindungan dalam kepercayaan lama</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: pola kecil dan berulang</span>
+                        <p><b>Gambaran motif:</b> Gringsing dikenal sebagai salah satu motif tradisional Batik Gedog. Tampilan tepatnya dapat berbeda antarkain, sehingga foto atau contoh kain tertentu tetap diperlukan untuk identifikasi visual yang akurat.</p>
+                        <p><b>Catatan budaya:</b> Kajian tentang motif Batik Gedog mencatat Gringsing sebagai motif yang dalam tradisi setempat dikaitkan dengan penolak penyakit dan digunakan dalam konteks ritual pernikahan. Ini menjelaskan kepercayaan dan fungsi budaya pada masa tertentu, bukan bukti bahwa kain dapat mencegah atau menyembuhkan penyakit.</p>
+                        <p><b>Makna:</b> Motif ini dapat dipelajari sebagai contoh bagaimana masyarakat dahulu mengungkapkan harapan akan keselamatan melalui benda budaya dan busana ritual.</p>
+                        <p><b>Keunikan:</b> Selain keindahan polanya, Gringsing membantu kita memahami hubungan antara kain, upacara, dan kepercayaan masyarakat.</p>
+                        <p><b>Sumber:</b> <a href="https://ejournal.unesa.ac.id/index.php/jurnal-pendidikan-kewarganegaraa/article/view/21959" target="_blank" rel="noopener">Penelitian UNESA tentang makna motif Batik Gedog</a></p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🏛️</span><span class="folder-heading"><strong>Motif Slimun (Selimun)</strong><small>Motif panji-panji • terkait kalangan bangsawan</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri yang dicatat: biru gelap/biron dan lambang tertentu</span>
+                        <p><b>Gambaran motif:</b> Slimun atau Selimun termasuk motif Batik Gedog yang diteliti dalam kaitannya dengan lambang seperti gapura, lencana, dan bentuk Yin-Yang. Detailnya perlu dilihat pada contoh kain karena komposisi dapat berbeda.</p>
+                        <p><b>Latar sejarah:</b> Penelitian UNESA mencatat Slimun sebagai motif panji-panji yang dahulu diperuntukkan bagi kalangan bangsawan. Penelitian tersebut juga membahas warna biru gelap atau “biron” dalam konteks budaya masyarakat Kerek.</p>
+                        <p><b>Makna dan penggunaan:</b> Sumber penelitian merekam kepercayaan serta fungsi tradisional tertentu pada motif ini, termasuk kaitannya dengan pengobatan demam pada masa lalu. Catatan itu adalah sejarah kepercayaan masyarakat, bukan anjuran atau bukti pengobatan medis.</p>
+                        <p><b>Keunikan:</b> Slimun menunjukkan bahwa pada masa lalu motif dan warna kain dapat berkaitan dengan kedudukan sosial serta kebiasaan budaya.</p>
+                        <p><b>Sumber:</b> <a href="https://ejournal.unesa.ac.id/index.php/jurnal-pendidikan-kewarganegaraa/article/view/21959" target="_blank" rel="noopener">Penelitian UNESA tentang makna motif Batik Gedog</a></p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🔺</span><span class="folder-heading"><strong>Motif Kijing Miring</strong><small>Ragam geometris • penggunaan tradisional</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri yang dicatat: bentuk segitiga/geomteris</span>
+                        <p><b>Gambaran motif:</b> Kajian tentang Batik Gedog menjelaskan bentuk segitiga pada Kijing Miring yang dikaitkan dengan bentuk batu nisan. Susunan dan detail visual pada kain tertentu bisa berbeda.</p>
+                        <p><b>Latar budaya:</b> Penelitian UNESA mencatat bahwa motif ini pernah difungsikan sebagai penutup keranda. Informasi ini merupakan catatan tentang penggunaan tradisional, sehingga perlu dipahami dalam konteks sejarah dan kebiasaan masyarakat setempat.</p>
+                        <p><b>Makna:</b> Tafsir mengenai pengingat kehidupan dan kematian dapat muncul dari hubungan nama dan penggunaan tersebut, tetapi sebaiknya tidak dianggap sebagai satu-satunya makna tanpa keterangan dari perajin atau sumber lokal.</p>
+                        <p><b>Keunikan:</b> Kijing Miring memperlihatkan bahwa kain tradisional tidak hanya digunakan sebagai pakaian, melainkan juga dapat hadir dalam konteks sosial dan ritual.</p>
+                        <p><b>Sumber:</b> <a href="https://ejournal.unesa.ac.id/index.php/jurnal-pendidikan-kewarganegaraa/article/view/21959" target="_blank" rel="noopener">Penelitian UNESA tentang makna motif Batik Gedog</a></p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🎃</span><span class="folder-heading"><strong>Motif Kembang Waluh</strong><small>Ragam hias flora • bunga tanaman waluh</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: bunga atau sulur tanaman</span>
+                        <p><b>Gambaran motif:</b> Kembang Waluh mengambil nama dari bunga tanaman waluh. Bentuk bunga dan sulur dapat distilisasi menjadi pola hias yang diulang pada kain.</p>
+                        <p><b>Inspirasi:</b> Penelitian mengenai Batik Gedog di Desa Margorejo menjelaskan bahwa banyak ide motif berasal dari hasil bumi dan lingkungan sekitar. Kembang Waluh dapat dibaca dalam kelompok inspirasi flora tersebut.</p>
+                        <p><b>Makna:</b> Kebahagiaan, rasa syukur atas hasil bumi, atau harapan keselamatan merupakan tafsir yang mungkin dikaitkan dengan motif bunga, tetapi makna khusus Kembang Waluh sebaiknya dikonfirmasi kepada pembatik yang membuatnya.</p>
+                        <p><b>Keunikan:</b> Motif ini mengingatkan kita pada hubungan antara kreativitas perajin, tanaman lokal, dan kehidupan agraris masyarakat.</p>
+                        <p><b>Sumber:</b> <a href="https://sedesa.um.ac.id/analisis-motif-batik-gedog-desa-margorejo-kecamatan-kerek-kabupaten-tuban/" target="_blank" rel="noopener">Universitas Negeri Malang — Analisis Motif Batik Gedog</a></p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🌺</span><span class="folder-heading"><strong>Motif Panji Ori</strong><small>Ragam panji • perlu konfirmasi pada contoh kain</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Catatan: penamaan dan detail bisa berbeda menurut koleksi</span>
+                        <p><b>Gambaran motif:</b> Nama Panji Ori muncul dalam daftar motif yang digunakan pada katalog awal GEDOG-DEX. Dokumentasi publik yang mudah diverifikasi mengenai detail bentuk dan makna khusus nama ini masih terbatas.</p>
+                        <p><b>Yang bisa diamati:</b> Untuk mengenali versi yang dimiliki perajin, perhatikan pola utama, ornamen pinggir, pengulangan bentuk, pilihan warna, dan apakah terdapat unsur panji atau ragam hias tumbuhan.</p>
+                        <p><b>Makna:</b> Penafsiran seperti kepemimpinan atau keberanian tidak kami tetapkan sebagai fakta tanpa rujukan khusus. Akan lebih akurat jika deskripsi ini dilengkapi cerita langsung dari perajin atau pemilik kain.</p>
+                        <p><b>Keunikan:</b> Dokumentasi motif dengan nama lokal penting agar pengetahuan tentang variasi motif tidak hilang. Jika ada foto kain Panji Ori dari koleksi setempat, deskripsinya dapat dibuat lebih presisi.</p>
+                    </div>
+                </details>
+                <details class="info-folder gedog-item">
+                    <summary><span class="folder-icon">🌱</span><span class="folder-heading"><strong>Motif Kolo Rambat</strong><small>Sulur merambat • pola berkelindan</small></span></summary>
+                    <div class="folder-content item-teks-lengkap">
+                        <span class="badge-pewarna">Ciri visual: sulur atau tumbuhan yang menjalar</span>
+                        <p><b>Gambaran motif:</b> Kolo Rambat dijelaskan melalui unsur sulur atau tumbuhan merambat yang saling berkelindan. Susunan ini membentuk alur yang terasa berkesinambungan.</p>
+                        <p><b>Makna:</b> Kesinambungan, hubungan yang saling terkait, dan pertumbuhan merupakan tafsir yang kerap dikaitkan dengan bentuk sulur. Makna khusus dapat berbeda menurut cerita pembatik.</p>
+                        <p><b>Catatan tradisi:</b> Artikel IAINU Tuban menyebut adanya penggunaan tradisional motif ini sebagai selimut bagi orang yang digigit binatang berbisa. Ini dicatat sebagai kepercayaan atau kebiasaan masa lalu, bukan pengobatan yang terbukti; kondisi gigitan berbisa membutuhkan pertolongan medis segera.</p>
+                        <p><b>Keunikan:</b> Motif ini dapat diamati dari arah sulur, pola sambungan, dan cara ruang kain diisi tanpa kehilangan kesan mengalir.</p>
+                        <p><b>Sumber:</b> <a href="https://iainutuban.ac.id/2024/08/30/sejarah-batik-gedog-khas-tuban-dari-desa-kedungrejo-kecamatan-kerek/" target="_blank" rel="noopener">IAINU Tuban — Sejarah Batik Gedog</a></p>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- HALAMAN 3: PETA LOKASI -->
+        <div id="page-peta" class="card hidden">
+            <h3>Sentra Pengrajin</h3>
+            <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">Desa Margorejo, Kecamatan Kerek, Kabupaten Tuban</p>
+            <a href="https://maps.google.com" target="_blank" style="text-decoration: none;">
+                <button class="btn-primary" style="background: #2D6A4F;">📍 Petunjuk Rute Google Maps</button>
+            </a>
+        </div>
+
+        <!-- HALAMAN 4: MAKSTUB (29 KULINER KHAS TUBAN) -->
+        <div id="page-makstub" class="card card-full-height hidden">
+            <h2 class="gedog-title">MAKSTUB: KULINER KHAS TUBAN 🥘</h2>
+            
+            <input type="text" id="searchMakstub" class="search-box" placeholder="🔍 Cari makanan khas Tuban..." onkeyup="cariMakstub()">
+
+            <div class="gedog-scroll-container" id="makstubList"></div>
+        </div>
+        
+        <!-- HALAMAN MINSTUB -->
+        <div id="page-minstub" class="card card-full-height hidden">
+            <h2 class="gedog-title">MINSTUB: MINUMAN KHAS TUBAN 🍹</h2>
+            <input type="text" id="searchMinstub" class="search-box" placeholder="🔍 Cari minuman khas Tuban..." onkeyup="cariMinstub()">
+            <div class="gedog-scroll-container" id="minstubList"></div>
+        </div>
+
+        <!-- HALAMAN JETUB -->
+        <div id="page-jetub" class="card card-full-height hidden">
+            <h2 class="gedog-title">JETUB: JEJAK TUBAN ⭐</h2>
+            <div style="display:flex; gap:15px; margin-top:20px;">
+                <div class="gedog-item" style="flex:1; text-align:center; cursor:pointer;" onclick="switchPage('wistub', this)">
+                    <div style="font-size:45px;">🏞️</div>
+                    <h3>WISTUB</h3>
+                    <p>Wisata Khas Tuban</p>
+                </div>
+                <div class="gedog-item" style="flex:1; text-align:center; cursor:pointer;" onclick="switchPage('kastub', this)">
+                    <div style="font-size:45px;">🎭</div>
+                    <h3>KASTUB</h3>
+                    <p>Kesenian Asli Tuban</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HALAMAN WISTUB -->
+        <div id="page-wistub" class="card card-full-height hidden">
+            <h2 class="gedog-title">WISTUB: WISATA KHAS TUBAN 🏞️</h2>
+            <input type="text" id="searchWistub" class="search-box" placeholder="🔍 Cari tempat wisata khas Tuban..." onkeyup="cariWistub()">
+            <div class="gedog-scroll-container" id="wistubList"></div>
+        </div>
+
+        <!-- HALAMAN KASTUB -->
+<div id="page-kastub" class="card card-full-height hidden">
+    <h2 class="gedog-title">KASTUB: KESENIAN ASLI TUBAN 🎭</h2>
+    
+    <input type="text" id="searchKastub" class="search-box" placeholder="🔍 Cari kesenian khas Tuban..." onkeyup="cariKastub()">
+
+    <div class="gedog-scroll-container" id="kastubList"></div>
+</div>
+
+        <!-- HALAMAN 6: MINI GAME (LOBBY + PUZZLE 3x5 + KUIS) -->
+        <div id="page-game" class="card card-full-height hidden">
+            <div class="game-top-bar">
+                <h2 class="gedog-title" style="margin: 0;">ARENA GAME 🎮</h2>
+                <div class="poin-box-kanan-atas">
+                    <span>🏆</span> <span id="total-poin-display">0</span> Poin
+                </div>
+            </div>
+
+            <div id="game-lobby">
+                <p style="font-size: 0.82rem; color: #666; margin-bottom: 12px;">Pilih permainan yang ingin kamu mainkan:</p>
+                <div class="lobby-container">
+                    <div class="lobby-card" onclick="pilihGame('puzzle')">
+                        <h4>🧩 Puzzle Batik 3×5 <span>➔</span></h4>
+                        <p>Rakit 15 kepingan kain bermotif Batik Gedog Tuban sampai utuh sempurna.</p>
+                        <span class="reward-badge">🎁 Hadiah: +100 Poin</span>
+                    </div>
+                    <div class="lobby-card" onclick="pilihGame('kuis')">
+                        <h4>❓ Kuis Kultur Tuban <span>➔</span></h4>
+                        <p>Uji wawasanmu seputar sejarah batik dan aneka kuliner khas Tuban.</p>
+                        <span class="reward-badge">🎁 Hadiah: +20 Poin / Jawaban</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="subgame-puzzle" class="hidden">
+                <button onclick="kembaliKeLobbyGame()" class="btn-secondary" style="width: auto; padding: 6px 14px; margin-bottom: 12px;">⬅ Ganti Pilihan Game</button>
+                <div class="card" style="background: #FFFDF9; border: 1px solid rgba(212, 163, 89, 0.4); text-align: center; padding: 12px;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary);" id="puzzle-moves-display">Langkah: 0</div>
+                    <p style="font-size: 0.78rem; color: #555; margin-top: 4px;">Ketuk 2 keping untuk menukar posisi sampai kain batik utuh!</p>
+                    <div class="puzzle-board" id="puzzle-board"></div>
+                    <div class="game-feedback" id="puzzle-feedback"></div>
+                    <div class="puzzle-preview-box">
+                        <img id="puzzle-preview-img" src="./puzzle.jpg" class="puzzle-preview-img" alt="Batik Target">
+                        <span style="font-size: 0.75rem; color: #666; text-align: left;">Contoh Motif Jadi<br><b>Kain Batik Tuban (3×5)</b></span>
+                    </div>
+                    <input type="file" id="input-foto-puzzle" accept="image/*" style="display: none;" onchange="gantiFotoDariGaleri(event)">
+                    <button class="btn-secondary" onclick="document.getElementById('input-foto-puzzle').click()" style="margin-top: 10px;">📁 Pilih Foto Sendiri dari Galeri HP</button>
+                    <button class="btn-primary" onclick="acakPuzzle()" style="margin-top: 8px;">🔄 Acak Ulang Puzzle</button>
+                </div>
+            </div>
+
+            <div id="subgame-kuis" class="hidden">
+                <button onclick="kembaliKeLobbyGame()" class="btn-secondary" style="width: auto; padding: 6px 14px; margin-bottom: 12px;">⬅ Ganti Pilihan Game</button>
+                <div class="card" style="background: #FFFDF9; border: 1px solid rgba(212, 163, 89, 0.4); padding: 14px;">
+                    <div class="game-question" id="game-question-text">Memuat pertanyaan...</div>
+                    <div class="game-options" id="game-options-container"></div>
+                    <div class="game-feedback" id="game-feedback-text"></div>
+                    <button id="btn-next-question" class="btn-primary hidden" onclick="pertanyaanSelanjutnya()">Lanjut ➔</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NAVIGASI BAWAH -->
+    <div class="nav-bar">
+        <div class="nav-item active" id="nav-beranda" onclick="switchPage('beranda', this)"><div>🏠</div>Beranda</div>
+        <div class="nav-item" id="nav-gedog" onclick="switchPage('gedog', this)"><div>📖</div>Si Gedog</div>
+        <div class="nav-item" id="nav-jetub" onclick="switchPage('jetub', this)"><div>⭐</div>JETUB</div>
+        <div class="nav-item" id="nav-makstub" onclick="switchPage('makstub', this)"><div>🥘</div>MAKSTUB</div>
+        <div class="nav-item" id="nav-minstub" onclick="switchPage('minstub', this)"><div>🍹</div>MINSTUB</div>
+        <div class="nav-item" id="nav-game" onclick="switchPage('game', this)"><div>🎮</div>Game</div>
+        <div class="nav-item" id="nav-scan" onclick="switchPage('scan', this)"><div>📷</div>Pindai</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+    <script>
+        // 29 DATA KULINER KHAS TUBAN
+        const daftarMakstub = [
+            {
+                nama: "Serabeh Selong",
+                foto: ["554557.jpg", "serabeh-selong.jpg"],
+                teks: `Serabi selong khas Tuban adalah salah satu kue tradisional khas Kabupaten Tuban yang juga dikenal dengan sebutan kue renda, apem, atau Ceylon.
+
+Ciri-Ciri Utama
+• Bentuk Renda: Memiliki pinggiran yang tipis, garing, dan berenda, sementara bagian tengahnya lebih tebal, empuk, serta berserat (berongga).
+• Rasa: Perpaduan rasa manis dari gula dan gurih dari santan kelapa kental.
+• Bahan Dasar: Dibuat dari campuran tepung beras, santan, ragi (atau tape singkong sebagai pengembang alami), gula pasir, garam, dan telur.
+• Penyajian: Sering dinikmati sebagai camilan tradisional yang cocok disantap saat santai atau ditemani dengan siraman santan kental.
+
+sumber: GoTravelly`
+            },
+            {
+                nama: "Garang Asem",
+                foto: ["garang-asem.jpg", "garang-asem.jpeg", "garang-asem.png"],
+                teks: `Garang asem Tuban adalah kuliner khas pesisir berupa olahan ikan laut berkuah segar dengan dominasi rasa pedas, asam, dan gurih yang kuat.
+
+Berbeda dengan garang asem dari Jawa Tengah yang berbahan dasar ayam dan dibungkus daun pisang, garang asem Tuban disajikan dalam mangkuk dengan kuah kaya rempah dan biasanya menggunakan ikan laut segar seperti ikan manyung atau tenggiri.
+
+Ciri Khas Garang Asem Tuban
+• Bahan Utama: Menggunakan ikan laut, paling populer adalah ikan manyung (bagian kepala atau badan) atau ikan tenggiri.
+• Tekstur & Rasa: Kuahnya cenderung kental atau kaya bumbu, berwarna kekuningan, dengan sensasi pedas dari cabai rawit utuh serta rasa asam yang segar dari belimbing wuluh atau tomat hijau.
+• Penyajian: Tidak dibungkus daun pisang, melainkan dimasak langsung di panci/wajan lalu disajikan di mangkuk
+
+sumber: blokTuban.com`
+            },
+            {
+                nama: "Ampo",
+                foto: ["ampo.jpg", "ampo.jpeg", "ampo.png"],
+                teks: `Ampo khas Tuban adalah camilan tradisional unik yang terbuat dari 100% tanah liat murni tanpa ada tambahan bahan lain.
+
+Fakta Unik Ampo Tuban
+• Bentuk: Berupa gulungan panjang, tipis, dan menyerupai stik atau serutan berwarna hitam legam.
+• Rasa dan Tekstur: Memiliki tekstur renyah dengan rasa yang tawar atau mirip seperti kacang mentah.
+• Asal Daerah: Pusat pembuatannya berada di Desa Bektiharjo, Kecamatan Semanding (Dukuh Trowulan).
+• Sejarah: Dulu dikonsumsi masyarakat Kabupaten Tuban sebagai makanan alternatif saat masa-masa sulit pada zaman penjajahan.
+• Manfaat & Tradisi: Masyarakat setempat percaya bahwa ampo dapat mendinginkan perut dan menguatkan pencernaan, serta sering dipakai sebagai sesaji adat.
+
+sumber: detikcom`
+            },
+            {
+                nama: "Kari Rajungan",
+                foto: ["kari-rajungan.jpg", "kare-rajungan.jpg"],
+                teks: `Kare rajungan khas Tuban adalah kuliner khas pesisir Jawa Timur berupa kepiting laut (rajungan) segar yang dimasak dengan kuah santan pedas, gurih, dan kaya rempah.
+
+Ciri Khas dan Penyajian
+• Rasa: Cenderung pedas menyengat, gurih dari santan, serta ada sedikit rasa manis alami dari daging rajungan.
+• Tekstur: Daging rajungan tetap lembut dan mudah lepas dari cangkangnya.
+• Pendamping: Disajikan bersama nasi putih hangat, sambal terasi, dan lalapan segar.
+
+sumber: Kompas.com`
+            },
+            {
+                nama: "Gemblong",
+                foto: ["gemblong.jpg", "gemblong-compreng.jpg"],
+                teks: `Gemblong Tuban adalah jajanan tradisional khas dari Kabupaten Tuban, Jawa Timur, yang terbuat dari ketan dan memiliki tekstur empuk, gurih, serta rasa yang lezat.
+
+Keunikan dan Tradisi
+• Simbol Lamaran: Di Tuban, khususnya di daerah seperti Desa Compreng, gemblong bukan sekadar camilan. Makanan ini menjadi simbol penting dalam tradisi lamaran atau pernikahan.
+• Tradisi "Gemblongan": Acara lamaran sering disebut warga setempat sebagai gemblongan, di mana pihak keluarga wanita membuat atau menyuguhkan gemblong dalam jumlah besar untuk dibagikan kepada sanak saudara dan tetangga.
+• Tekstur Khas: Gemblong khas Tuban (seperti Gemblong Compreng) dikenal memiliki tekstur yang lebih lembut, empuk, dan gurih dibandingkan gemblong dari daerah lain.
+
+Sumber: Radar Utara - Disway`
+            },
+            {
+                nama: "Dumbek",
+                foto: ["dumbek.jpg", "kue-dumbek.jpg"],
+                teks: `Dumbek Tuban adalah jajanan pasar tradisional khas Kabupaten Tuban, Jawa Timur, yang berbentuk unik menyerupai corong atau terompet kecil dan terbuat dari perpaduan tepung beras, santan, serta gula merah.
+
+Karakteristik dan Keunikan
+• Bahan Alami: Dibuat dari tepung beras pilihan, santan kelapa, dan gula jawa tanpa pemanis buatan atau pengawet.
+• Pembungkus Khas: Adonan dibungkus menggunakan daun lontar (atau siwalan) muda yang dibentuk menjadi kerucut memanjang.
+• Cita Rasa: Memiliki tekstur lembut, aroma yang harum dari daun lontar, serta rasa manis legit yang khas.
+
+Sumber: blokTuban.com`
+            },
+            {
+                nama: "Becek Menthok",
+                foto: ["becek-menthok.jpg", "becek-menthok.jpeg", "becek-mentok.jpg"],
+                teks: `Becek Menthok adalah kuliner khas Kabupaten Tuban, Jawa Timur, berupa olahan daging menthok (itik serati) berkuah santan kental yang kaya rempah.
+
+Ciri Khas dan Karakteristik
+• Kuah Unik: Memiliki tampilan dan cita rasa yang merupakan perpaduan antara kare dan gulai, tetapi dengan rasa yang lebih tajam, gurih, asin, dan pedas.
+• Penggunaan Kayu Mesoyi: Salah satu bumbu wajib yang membedakan becek khas Tuban adalah tambahan kayu mesoyi (aromanya mirip kayu manis namun lebih tebal dan cocok untuk masakan gurih).
+• Bumbu Jangkep: Diracik dari bumbu halus seperti bawang merah, bawang putih, kemiri, cabai, ketumbar, laos, kunyit, daun jeruk, dan daun salam.
+• Tekstur Daging: Daging menthok direbus dalam waktu yang cukup lama (sekitar 2 jam) agar teksturnya empuk, bumbunya meresap sampai ke dalam, dan sama sekali tidak amis.
+• Penyajian: Umumnya disantap bersama nasi putih hangat atau nasi jagung, serta sering dilengkapi dengan taburan bawang goreng.
+
+Sumber: detikcom`
+            },
+            {
+                nama: "Cumi cumi hitam",
+                foto: ["cumi-hitam.jpg", "cumi-cumi-hitam.jpg"],
+                teks: `Cumi-cumi hitam khas Tuban adalah hidangan khas pesisir pantai utara (Pantura) Jawa yang menggunakan tinta alami cumi-cumi sebagai kuah atau bumbu utamanya.
+
+Karakteristik & Cita Rasa
+• Warna: Hitam pekat dari tinta cumi yang dibiarkan utuh di dalam tubuh cumi tanpa dibuang.
+• Rasa: Gurih, asin, kaya akan rasa umami (gurih alami dari kandungan tinta), dan cenderung pedas karena penggunaan cabai rawit yang khas.
+• Tekstur: Cumi dimasak sebentar agar dagingnya tetap kenyal dan tidak alot. Saat dimasak, cumi mengeluarkan airnya sendiri tanpa perlu tambahan banyak air.
+
+Sumber: cookpad.com`
+            },
+            {
+                nama: "Belut pedas",
+                foto: ["belut-pedas.jpg", "belut-rica-rica.jpg"],
+                teks: `Belut pedas khas Tuban (atau sering diolah sebagai belut rica-rica) adalah salah satu kuliner legendaris dari Kabupaten Tuban, Jawa Timur, yang terkenal dengan perpaduan rasa pedas, gurih, dan rempah yang kuat.
+
+Ciri Khas Utama:
+• Bahan Baku Segar: Umumnya menggunakan belut sawah segar tangkapan lokal yang berdaging tebal, empuk, dan tidak amis.
+• Tekstur Belut: Berbeda dari sekadar belut goreng kering yang membuatnya keras atau alot, belut khas Tuban dimasak sedemikian rupa—kadang digoreng tidak terlalu kering atau diolah bersama bumbu—sehingga tekstur dagingnya tetap lembut, kenyal, dan lumer di mulut.
+• Varian Bumbu Rica-Rica: Memiliki dua varian utama, yaitu rica-rica kering (bumbunya meresap pekat dan menyatu di badan belut) serta rica-rica basah (dengan bumbu rempah atau kuah pedas yang melimpah dan menantang lidah).
+• Rempah Kuat: Bumbu halusnya terdiri dari campuran cabai merah, cabai rawit super pedas, bawang merah, bawang putih, terasi, serai, daun jeruk, serta lengkuas
+
+Sumber: Kompas.com`
+            },
+            {
+                nama: "Sate menthok",
+                foto: ["sate-menthok.jpg", "sate-mentok.jpg"],
+                teks: `Sate menthok khas Tuban adalah salah satu kuliner tradisional yang unik dan legendaris dari Kabupaten Tuban, Jawa Timur.
+
+Karakteristik Utama
+• Bahan Baku: Berbeda dari sate pada umumnya yang menggunakan daging ayam, sapi, atau kambing, sate ini menggunakan daging menthok (jenis unggas yang mirip dengan itik atau angsa).
+• Tekstur Daging: Potongan daging menthok dibuat cukup besar seukuran ibu jari orang dewasa atau sate kambing. Teksturnya kenyal, juicy, tidak alot, serta terasa nikmat saat dikunyah.
+• Rasa: Rasanya gurih dan khas dengan aroma bakar arang yang kuat, sering kali dinilai mirip dengan perpaduan daging bebek dan kambing.
+• Penyajian: Dalam satu porsi biasanya berisi 10 tusuk sate. Sate disiram atau disajikan bersama bumbu kecap manis, irisan bawang merah segar, potongan tomat, serta sambal terasi.
+• Pasangan Makan: Sate menthok paling nikmat disantap bersama becek menthok (sejenis gulai atau olahan berkuah khas menthok yang pedas-gurih) dan nasi jagung.
+
+Sumber: Tugu Jatim`
+            },
+            {
+                nama: "Keripik gayam",
+                foto: ["keripik-gayam.jpg", "kripik-gayam.jpg"],
+                teks: `Keripik gayam adalah makanan ringan khas Tuban yang terbuat dari biji buah gayam (Inocarpus fagifer).
+
+Berikut adalah deskripsi lengkap mengenai keripik gayam khas Tuban:
+1. Bahan Baku Utama
+• Buah Gayam: Pohon gayam tumbuh di daerah tropis yang lembap. Di Tuban, salah satu sentra produksinya berada di Desa Mandirijo, Kecamatan Merakurak.
+• Kelangkaan: Buah ini cukup langka dan tidak bisa dikonsumsi langsung dalam kondisi mentah karena kulit serta daging buahnya keras.
+2. Karakteristik Rasa dan Tekstur
+• Rasa: Memiliki cita rasa yang gurih, khas, serta perpaduan rasa alami dari buahnya.
+• Tekstur: Cenderung renyah dan kriuk. Di beberapa daerah atau produsen tertentu (seperti di Mandirijo), teksturnya dibuat lebih renyah dan tidak terlalu keras.
+
+Sumber: Blibli`
+            },
+            {
+                nama: "Rujak engos engos",
+                foto: ["rujak-engos-engos.jpg", "rujak-engos.jpg"],
+                teks: `Rujak engos-engos adalah kudapan atau makanan khas dari daerah pesisir Kabupaten Tuban, Jawa Timur, terutama wilayah Palang.
+
+Karakteristik Utama
+• Bahan Utama: Menggunakan rumput laut (disebut engos-engos) yang sudah direbus dengan tekstur yang renyah dan segar.
+• Isi Tambahan: Biasanya dicampur dengan sayuran seperti kangkung, kecambah (toge), serta irisan buah segar (seperti nanas, timun, bengkuang, belimbing, kedondong, atau pepaya muda). Opsional juga bisa ditambah lontong.
+• Bumbu Rujak: Bumbu diulek dari campuran cabai merah keriting, cabai rawit, terasi, asam jawa, garam, serta ciri khas utamanya yaitu petis khas Tuban (kadang ditambah bumbu kacang sesuai selera).
+• Cita Rasa: Perpaduan rasa pedas, asin, dan gurih yang khas dari hasil laut serta bumbu petis.
+
+Sumber: Tuban Smart City`
+            },
+            {
+                nama: "Rempeyek Bunder Saonone",
+                foto: ["rempeyek-bunder.jpg", "rempeyek-bunder-saonone.jpg"],
+                teks: `Rempeyek Bunder Saonone adalah makanan ringan khas dari Kabupaten Tuban, tepatnya berasal dari Dusun Sambong Lombok, Kecamatan Bangilan.
+
+Karakteristik & Informasi Utama
+• Asal Daerah: Diproduksi di Dusun Sambong Lombok, Kecamatan Bangilan, Kabupaten Tuban.
+• Cita Rasa & Tekstur: Memiliki rasa yang gurih, renyah, dan asin khas bumbu rempeyek tradisional.
+• Bentuk & Tampilan: Berbentuk bundar (sesuai namanya) dengan isian yang khas (seperti kacang tanah) dan tekstur garing.
+
+Sumber: Tuban Smart City`
+            },
+            {
+                nama: "Keripik Gedebog",
+                foto: ["keripik-gedebog.jpg", "keripik-gedebog-pisang.jpg"],
+                teks: `Keripik Gedebog khas Tuban (dikenal juga dengan nama seperti The Bog Crispy atau olahan dari Galuh Rebogpis Snack) adalah camilan unik berbahan dasar pelepah atau batang semu pohon pisang—khususnya pisang kepok—yang diolah oleh pelaku UMKM lokal, salah satunya di Desa Prambonwetan, Kecamatan Rengel, Kabupaten Tuban.
+
+Berikut deskripsi lengkap mengenai karakteristik, proses, dan keunggulannya:
+1. Karakteristik & Rasa
+• Bahan Baku: Menggunakan bagian dalam atau serat pelepah/batang pisang (biasanya jenis pisang kepok yang masih muda) yang sebelumnya dianggap sebagai limbah pertanian.
+• Tekstur & Cita Rasa: Memiliki tekstur yang sangat renyah (kriuk) dan gurih, menyerupai keripik atau kerupuk premium, dengan bumbu rempah khas yang menutupi rasa asli batang pisang sehingga tidak pahit.
+• Varian Rasa: Hadir dalam berbagai pilihan rasa kekinian seperti original, balado, pedas manis, hingga sapi panggang atau pedas dower.
+
+Sumber: Tuban Smart City`
+            },
+            {
+                nama: "Serabi lodeh",
+                foto: ["serabi-lodeh.jpg", "serabeh-lodeh.jpg"],
+                teks: `Serabi lodeh (atau serabeh lodeh) adalah kuliner malam yang unik dan khas dari Kabupaten Tuban, Jawa Timur.
+
+Karakteristik dan Keunikan
+• Perpaduan Rasa: Berbeda dari serabi daerah lain yang biasanya disajikan manis dengan kinca atau kelapa parut, serabi khas Tuban memiliki rasa dasar serabi yang cenderung asin-gurih lalu disiram dengan kuah sayur lodeh yang gurih, pedas, dan sedikit manis.
+• Pengganti Lontong/Nasi: Serabi di sini berfungsi menggantikan lontong atau nasi yang biasa disantap bersama sayur lodeh.
+• Isian Kuah Lodeh: Kuah lodeh pelengkapnya sering kali diisi dengan potongan labu, mie, hingga tambahan telur.
+• Proses Masak Tradisional: Adonan tepung beras dimasak menggunakan cetakan di atas tungku kayu bakar, sehingga menghasilkan aroma smoky (asap) yang khas pada serabi.
+
+Sumber: Tuban Smart City`
+            },
+            {
+                nama: "Pelas palang",
+                foto: ["pelas-palang.jpg", "pelas-palang.jpeg"],
+                teks: `Pelas Palang adalah kudapan atau lauk khas dari Kecamatan Palang, Kabupaten Tuban, Jawa Timur, yang bentuk dan teksturnya mirip dengan dadar jagung atau bakwan jagung.
+
+Karakteristik dan Cita Rasa
+• Bahan utama: Terbuat dari jagung muda (diiris, ditumbuk, atau diulek/diplok) yang dipadukan dengan bumbu rempah tradisional dan irisan daun bawang.
+• Rasa: Memiliki ciri khas rasa yang pedas, asin, gurih, dan sedikit manis khas kuliner wilayah pesisir utara.
+• Cara memasak: Adonan dipipihkan atau ditempel-tempelkan langsung di pinggir wajan saat digoreng.
+• Penyajian: Sering disantap sebagai camilan maupun sebagai pendamping nasi dan olahan ikan nelayan.
+
+Sumber: Tuban Smart City`
+            },
+            {
+                nama: "Siwalan",
+                foto: ["siwalan.jpg", "buah-siwalan.jpg", "ental.jpg"],
+                teks: `Siwalan khas Tuban adalah buah tropis dari pohon lontar (Borassus flabellifer) yang tumbuh subur di wilayah pesisir utara dan perbukitan kapur Kabupaten Tuban, Jawa Timur. Buah ini telah lama menjadi ikon agrowisata sekaligus oleh-oleh wajib bagi para pelancong yang melintasi jalur pantura Tuban.
+
+Karakteristik & Cita Rasa
+Bentuk & Tekstur: Daging buah siwalan berbentuk bulat pipih, berwarna putih bening transparan, dan terbungkus dalam tempurung serat tebal. Teksturnya kenyal, lembut, serta berair (juicy) mirip kolang-kaling atau daging kelapa muda, namun dengan sensasi gigitan yang lebih padat.
+Rasa: Buah ini menyuguhkan rasa manis alami yang lembut dipadukan dengan kesegaran kadar air yang tinggi, sangat cocok dinikmati dingin saat cuaca terik.
+
+Sumber: Tugu jatim`
+            },
+            {
+                nama: "Rengginang Tuban",
+                foto: ["rengginang.jpg", "rengginang-tuban.jpg"],
+                teks: `Rengginang khas Tuban adalah salah satu camilan tradisional berupa kerupuk tebal dari butiran beras ketan yang tidak dihancurkan. Kudapan ini menjadi salah satu ikon oleh-oleh khas dari Kabupaten Tuban, Jawa Timur.
+
+Karakteristik Rengginang Khas Tuban
+• Bahan Baku Utama: Menggunakan beras ketan pilihan yang butirannya tetap utuh dan jelas terlihat.
+• Tekstur: Tebal, garing, dan sangat renyah saat digigit.
+• Proses Pengolahan: Ketan dikukus, dibumbui, dicetak bulat pipih, dijemur di bawah panas matahari hingga benar-benar kering, lalu digoreng menggunakan minyak panas.
+• Varian Rasa: Umumnya hadir dengan rasa gurih, terasi, bawang, serta rasa manis. Salah satu varian yang cukup diminati adalah rengginang rasa terasi yang khas, gurih, dan bebas gula.
+• Popularitas: Sering dijadikan camilan sehari-oleh maupun suguhan khas saat hari raya.
+
+Sumber: Lazada`
+            },
+            {
+                nama: "Cumi crispy",
+                foto: ["cumi-crispy.jpg", "cumi-crispy-tuban.jpg"],
+                teks: `Cumi crispy khas Tuban adalah salah satu produk olahan hasil laut yang populer sebagai camilan atau lauk kering khas dari Kabupaten Tuban, Jawa Timur.
+
+Karakteristik dan Deskripsi Utama:
+• Bahan Baku Segar: Diolah menggunakan cumi-cumi pilihan atau baby cumi yang didapat langsung dari para nelayan lokal di sepanjang pesisir Tuban.
+• Tekstur Renyah (Crispy): Dibalut dengan adonan tepung berbumbu khusus lalu digoreng kering hingga menghasilkan tekstur yang renyah (kriuk) di luar namun tetap lembut di bagian dalam.
+• Rasa Gurih Khas: Memiliki rasa gurih alami dari cita rasa seafood yang kuat tanpa menggunakan bahan pengawet berbahaya.
+• Varian Rasa: Tersedia dalam beberapa pilihan rasa, seperti rasa original yang gurih maupun varian pedas seperti balado.
+
+Sumber: Lazada.co.id`
+            },
+            {
+                nama: "Ikan asin",
+                foto: ["ikan-asin.jpg", "ikan-asin-tuban.jpg"],
+                teks: `Ikan asin Tuban adalah salah satu produk olahan hasil laut yang populer dijadikan oleh-oleh khas dari Kabupaten Tuban, Jawa Timur.
+
+Jenis Ikan Asin Populer
+• Jambal Roti: Dagingnya tebal, gurih, dan berukuran besar.
+• Bulu Ayam: Berukuran kecil, tipis, dan bertekstur renyah setelah digoreng.
+• Terang Bulan: Jenis ikan asin khas daerah pesisir Tuban yang banyak dicari wisatawan.
+• Tetet & Teri Nasi: Sering diolah menjadi lauk pendamping atau peyek.
+
+Sumber: Halodoc`
+            },
+            {
+                nama: "Kerupuk ikan Tengiri",
+                foto: ["kerupuk-tengiri.jpg", "kerupuk-ikan-tengiri.jpg"],
+                teks: `Kerupuk ikan tengiri khas Tuban, Jawa Timur—dengan merek terkenal seperti Cap Guci Toak—merupakan salah satu produk camilan dan oleh-oleh khas daerah pesisir utara.
+
+Berikut adalah deskripsi lengkap mengenai karakteristik dan keunggulannya:
+Karakteristik & Rasa
+• Aroma dan Rasa: Memiliki aroma khas ikan tengiri yang sangat kuat dan harum, dengan dominasi rasa gurih, sedap, dan kaya cita rasa ikan segar.
+• Tekstur: Renyah dan mekar sempurna setelah digoreng.
+• Bentuk: Umumnya berukuran potongan kecil yang pas untuk sekali makan (tersedia dalam kemasan praktis seperti 250 gram).
+
+Sumber: Shopee`
+            },
+            {
+                nama: "dodol",
+                foto: ["dodol-tuban.jpg", "dodol.jpg", "dodol-tuban.jpeg", "dodol.png"],
+                teks: `Dodol atau jenang khas Tuban merupakan kudapan tradisional bertekstur lembut dengan cita rasa manis legit yang menjadi salah satu oleh-oleh wajib bagi para peziarah di kawasan Makam Sunan Bonang.
+
+Karakteristik Dodol / Jenang Khas Tuban
+• Bahan Baku: Terbuat dari campuran tepung ketan, santan kelapa, serta gula merah atau gula aren pilihan. Variasi lokal juga mencakup jenang siwalan yang memanfaatkan potensi buah khas daerah atau dodol buah dengan berbagai rasa.
+• Tekstur dan Rasa: Memiliki tekstur yang kenyal, lembut, empuk, dan rasa manis legit yang khas.
+• Kemasan Tradisional: Sering kali dikemas menggunakan pelepah jagung atau daun tradisional yang menambah keunikan tampilan produk.
+• Kaitan dengan Wisata Religi: Kudapan ini sangat populer dan selalu dicari oleh wisatawan serta peziarah, terutama saat momen-momen besar seperti tradisi haul Sunan Bonang.
+
+Sumber: Tokopedia`
+            },
+            {
+                nama: "Pepes belut",
+                foto: ["pepes-belut.jpg", "pes-pes-belut.jpg"],
+                teks: `Pepes belut khas Tuban—atau yang sering disebut oleh masyarakat lokal dengan nama pes-pes belut—adalah kuliner tradisional legendaris asal Tuban, Jawa Java Timur, yang terkenal dengan cita rasa sangat pedas, gurih, dan beraroma tajam.
+
+Kuliner ini lahir dari perpaduan geografis Tuban yang memiliki area persawahan luas (penghasil belut alam) serta budaya masyarakat pesisir yang gemar mengonsumsi makanan dengan bumbu rempah yang kuat dan berani.
+
+1. Karakteristik Rasa dan Tekstur
+• Pedas Menggigit: Berbeda dengan pepes daerah lain yang cenderung manis atau gurih sedang, pepes belut Tuban didominasi oleh rasa pedas yang sangat tajam karena penggunaan cabai rawit dalam jumlah besar.
+• Gurih Kaya Rempah: Paduan bawang, kemiri, dan bumbu pelengkap membalut daging belut dengan sempurna, menyamarkan bau amis alaminya.
+• Tekstur Daging Lembut: Belut dikukus bersama bumbu di dalam daun pisang hingga dagingnya menjadi sangat empuk
+
+Sumber: Primarasa`
+            },
+            {
+                nama: "Keripik talas",
+                foto: ["keripik-talas.jpg", "keripik-mbote.jpg"],
+                teks: `Keripik talas khas Tuban (sering disebut keripik mbote) merupakan salah satu produk camilan unggulan UMKM lokal yang dibuat dari umbi talas pilihan petani setempat dengan tekstur renyah, tipis, dan bebas pengawet buatan.
+
+Karakteristik & Varian Rasa
+• Bahan Baku: Menggunakan umbi talas lokal (mbote) yang diolah higienis untuk menghilangkan getah agar tidak gatal saat dikonsumsi.
+• Varian Rasa: Tersedia dalam berbagai pilihan rasa seperti original gurih, asin, balado, pedas, hingga sapi panggang.
+• Harga: Umumnya dijual mulai dari Rp13.000 hingga Rp14.800 per kemasan (bervariasi tergantung ukuran berat seperti 150g, 250g, hingga 500g).
+
+Sumber: Shopee`
+            },
+            {
+                nama: "Petis",
+                foto: ["petis-tuban.jpg", "petis.jpg", "petis-tuban.jpeg", "petis.png"],
+                teks: `Petis khas Tuban adalah bumbu atau pasta pekat khas daerah pesisir utara Jawa Timur yang terbuat dari olahan sari hasil laut.
+
+Jenis-Jenis Petis Tuban
+Di daerah pesisir Tuban, terdapat dua jenis petis yang umum dijumpai:
+• Petis Udang: Dibuat dari sari atau sisa rebusan udang segar, menghasilkan warna yang gelap (hitam/cokelat pekat) dengan cita rasa yang gurih dan sedikit manis.
+• Petis Ikan: Dibuat dari sari atau sisa rebusan ikan laut, yang khas memiliki cita rasa lebih asin dibandingkan petis udang pada umumnya.
+
+Sumber: Lazada`
+            },
+            {
+                nama: "Keripik tempe",
+                foto: ["keripik-tempe.jpg", "kripik-tempe.jpg"],
+                teks: `Keripik atau kerupuk tempe khas Tuban adalah salah satu camilan dan produk oleh-oleh khas dari Kabupaten Tuban, Jawa Timur.
+
+Ciri-Ciri dan Deskripsi Produk
+• Bahan Baku Utama: Dibuat dari tempe kedelai pilihan dengan irisan yang tipis dan rapi.
+• Tekstur: Sangat renyah, garing, dan ringan (kriuk), tidak keras saat digigit.
+• Rasa: Memiliki rasa gurih khas kedelai fermentasi dipadu dengan bumbu rempah seperti bawang putih dan ketumbar.
+• Varian Rasa: Sejumlah produsen lokal di Tuban (seperti produk khas UMKM setempat) mengembangkannya dalam berbagai pilihan rasa, mulai dari original (asin gurih), balado, pedas, hingga pedas gila.
+
+Sumber: Tokopedia`
+            },
+            {
+                nama: "Mangut manyung",
+                foto: ["mangut-manyung.jpg", "mangut.jpg", "mangut-manyung.jpeg", "ndas-manyung.jpg", "mangut-manyung.png"],
+                teks: `Mangut manyung (sering juga diolah dengan sebutan Ndas Manyung atau Garang Asem Manyung) adalah salah satu kuliner khas pesisir Pantura yang sangat digemari di Kabupaten Tuban, Jawa Timur.
+
+Karakteristik Mangut Manyung Tuban
+• Bahan Utama: Menggunakan kepala ikan manyung berukuran besar (jumbo) atau bagian daging dan ekor ikan manyung yang telah melalui proses pengasapan (smoked fish). Ikan manyung sendiri memiliki tekstur daging yang tebal, padat, dan tidak mudah hancur.
+• Cita Rasa Kuah: Di Tuban, olahan manyung sering kali tidak hanya berupa kuah santan pedas (mangut yang kental dan medok), tetapi juga populer dengan variasi kuah yang segar, asam, dan pedas seperti gaya garang asem (menggunakan belimbing wuluh, tomat segar, serta cabai rawit utuh).
+• Aroma Khas: Proses pengasapan pada kepala ikan manyung memberikan aroma smoky (asap) yang kuat, yang sekaligus menghilangkan bau amis khas ikan laut.
+
+Sumber: Attin Food`
+            },
+            {
+                nama: "Keripik ikan laut",
+                foto: ["keripik-ikan.jpg", "keripik-ikan-laut.jpg"],
+                teks: `Kripik ikan laut khas Tuban adalah produk olahan hasil laut yang dibuat dari berbagai jenis ikan segar tangkapan nelayan lokal, berpadu dengan tepung dan bumbu rempah pilihan.
+
+Karakteristik dan Bahan
+• Bahan Dasar: Terbuat dari ikan laut kering atau segar seperti ikan teri, teri nasi, teri belah, bulu ayam, ikan layur, ikan bilis, kalapan, jambrong, hingga belut laut.
+• Komposisi Adonan: Umumnya menggunakan campuran tepung tapioka, tepung beras, bawang putih, rempah-rempah, serta tambahan garam dan gula.
+• Cita Rasa dan Tekstur: Memiliki rasa yang gurih, renyah, dan tidak menghilangkan aroma khas ikan segarnya.
+• Fungsi Penyajian: Dapat dinikmati langsung sebagai camilan atau dijadikan lauk pendamping saat makan nasi.
+
+Sumber: Instragram`
+            },
+            {
+                nama: "Pentol ikan petis",
+                foto: ["pentol-ikan-petis.jpg", "pentol-ikan.jpg"],
+                teks: `Pentol ikan petis adalah jajanan khas wilayah pesisir Tuban (terutama daerah Bulu, Bancar) yang memadukan pentol ikan segar dengan sambal petis khas.
+
+Ciri Khas Pentol Ikan Petis Tuban
+• Bahan Pentol: Terbuat dari campuran tepung terigu, tepung tapioka, daun bawang, bawang putih, dan daging ikan tongkol segar khas laut utara.
+• Sambal Petis: Dibuat dari petis ikan (seperti petis ikan tuna), cabai rawit, gula jawa (gula merah), dan perasan air asam jawa. Pembeli biasanya bisa memilih varian rasa petis, baik yang cenderung manis maupun asin/pedas.
+• Legenda Kuliner: Salah satu yang paling terkenal adalah Rujak Pentol Mak Kemis di Kecamatan Bancar (sekitar 40 km dari pusat Kota Tuban) yang selalu ramai pembeli.
+
+Sumber: cookpad.com`
+            }
+        ];
+
+        // DATA MINUMAN KHAS TUBAN
+        const daftarMinstub = [
+            {
+                nama: "Es bubur sumsum",
+                foto: "m1.jpg",
+                teks: `Es bubur sumsum khas Tuban adalah hidangan tradisional perpaduan makanan dan minuman yang menyegarkan dengan tekstur yang lembut serta cita rasa manis-gurih.
+
+Karakteristik dan Komponen
+• Tekstur Lembut: Bubur sumsum terbuat dari tepung beras yang dimasak halus bersama santan dan daun pandan, memberikan sensasi lumer di mulut.
+• Aneka Isian (Bubur Campur): Di Tuban, penyajian es bubur sumsum sering dikombinasikan dengan berbagai isian tradisional lain seperti sagu mutiara, bubur kacang hijau, ketan hitam, serta buliran grendul atau candil.
+• Kuah Manis dan Gurih: Disiram dengan kuah santan kental yang gurih serta lelehan air gula merah (gula aren) yang harum, kemudian ditambah es batu agar terasa dingin dan segar saat cuaca panas.
+Sumber: Fimela.com`
+            },
+            {
+                nama: "Legen",
+                foto: "m2.jpg",
+                teks: `Legen adalah minuman tradisional khas Kabupaten Tuban, Jawa Timur, yang terbuat dari air sadapan bunga (manggar) pohon siwalan atau lontar (Borassus flabellifer).
+
+Ciri-Ciri Utama Legen Tuban
+• Asal Kata: Berasal dari kata "legi" dalam bahasa Jawa yang berarti manis.
+• Rasa dan Aroma: Memiliki perpaduan rasa manis alami yang khas, sedikit asam, dan sensasi segar yang mirip dengan air soda ringan.
+• Warna dan Tekstur: Warnanya agak keruh dengan sedikit buih alami.
+• Daya Tahan: Karena murni alami tanpa bahan pengawet, legen sangat cepat terfermentasi. Dalam waktu kurang dari 24 jam, rasanya akan berubah menjadi asam dan bisa berubah menjadi tuak (minuman beralkohol).
+• Sentra Produksi: Salah satu wilayah penghasil legen terbaik dan paling terkenal di Tuban berasal dari Kecamatan Semanding (seperti di Prunggahan Kulon dan Kowang).
+Sumber: Tuban Smart City`
+            },
+            {
+                nama: "Es Siwalan/ Es dawet Siwalan",
+                foto: "m3.jpg",
+                teks: `Es Siwalan khas Tuban adalah minuman segar tradisional yang memanfaatkan potongan daging buah siwalan (lontar) segar yang dipadukan dengan air gula atau kuah manis khas.
+Berbeda dengan es dawet yang menggunakan butiran cendol tepung beras, Es Siwalan murni menggunakan irisan buah siwalan sebagai isian utamanya tanpa tambahan cendol tepung.
+
+Karakteristik dan Komponen Utama
+• Isian Buah Siwalan: Daging buah siwalan (buah lontar muda) dipotong kotak-kotak kecil atau diiris tipis. Teksturnya kenyal, transparan, lembut, dan sedikit mirip kolang-kaling namun lebih empuk.
+• Pemanis Alami (Air Gula / Legen): Menggunakan pemanis berupa gula aren/gula merah cair, atau sering kali dipadukan langsung dengan air legen (nira siwalan) asli khas Tuban yang memberikan sensasi rasa manis, legit, dan aroma khas.
+• Kuah dan Pelengkap: Disajikan dengan campuran santan (atau terkadang diganti susu cair pada kreasi modern), es batu, dan kadang ditambah irisan buah 
+Sumber: detikcom`
+            },
+            {
+                nama: "Wedang ronde Tuban",
+                foto: "m4.jpg",
+                teks: `Wedang ronde khas Tuban adalah minuman tradisional hangat berisi bola-bola ketan kenyal (mochi) dengan isian kacang tanah tumbuk, yang disajikan bersama kuah jahe manis dan berbagai pelengkap seperti kolang-kaling, kacang sangrai, serta mutiara.
+
+Ciri Khas Wedang Ronde di Tuban
+• Komponen Isi: Terdiri dari pentol ronde (bola ketan isi kacang), mutiara, kolang-kaling, dan kacang goreng.
+• Kombinasi Kuliner Malam: Di Tuban, penjual wedang ronde sering dijajakan bersamaan atau berdampingan dengan kuliner malam hangat lainnya seperti angsle (kuah santan beraroma pandan) atau tauwa.
+Sumber: RRI`
+            },
+            {
+                nama: "Tuak Tuban",
+                foto: "m5.jpg",
+                teks: `Tuak khas Tuban (disebut juga toak) adalah minuman beralkohol tradisional yang dibuat dari hasil fermentasi air nira dari bunga pohon siwalan (lontar).
+
+Karakteristik dan Ciri Khas
+• Bahan Baku: Berasal dari getah nira bunga siwalan (wolo) yang ditampung menggunakan wadah bambu (bumbung) selama sehari semalam.
+• Tambahan Bahan: Sering kali dicampur dengan "babakan" (kulit kayu tertentu) untuk menambah rasa sepet serta meningkatkan kadar alkohol sebelum dan selama proses fermentasi.
+• Rasa dan Warna: Memiliki warna putih keruh seperti susu atau putih kecokelatan, dengan sensasi rasa pahit, agak masam, dan sepet.
+• Kadar Alkohol: Mengandung alkohol cukup tinggi dan dapat menyebabkan mabuk jika dikonsumsi berlebihan.
+• Cara Penyajian: Secara tradisional disajikan menggunakan centhak, yaitu gelas atau wadah kecil yang terbuat dari potongan bambu.
+Sumber: Rek Ayo Rek`
+            },
+            {
+                nama: "Wedang jahe khas pesisir",
+                foto: "m6.jpg",
+                teks: `Wedang Jahe Khas Pesisir Tuban adalah minuman hangat tradisional khas Kabupaten Tuban yang diracik khusus untuk menghalau angin laut malam yang dingin bagi masyarakat di sepanjang pesisir pantai.
+Berikut adalah deskripsi lengkap mengenai karakteristik unik dari minuman khas ini:
+🌟 Ciri Khas Utama
+• Jenis Jahe: Menggunakan racikan jahe emprit lokal. Jahe emprit dipilih karena memiliki ukuran rimpang yang lebih kecil namun menghasilkan rasa pedas yang lebih tajam dan aroma yang lebih kuat dibanding jahe gajah, sehingga sangat efektif untuk menghangatkan tubuh dengan cepat.
+• Pemanis Lokal: Dipadukan dengan gula aren lokal asli Tuban. Gula aren ini memberikan sentuhan rasa manis yang legit, gurih alami, dan warna kecokelatan yang pekat, berbeda dengan wedang jahe daerah lain yang terkadang menggunakan gula tebu biasa atau gula jawa jenis lain.
+Sumber: Alodokter`
+            },
+            {
+                nama: "Wedang sere",
+                foto: "m7.jpg",
+                teks: `Wedang Sere khas pesisir Tuban adalah minuman tradisional berbasis rempah yang memadukan serai (sereh), jahe, asam jawa, kunyit, dan gula merah. Di wilayah pesisir Tuban dan sekitarnya, varian wedang ini sering kali dikenal dengan nama lokal yang unik, yaitu Wedang Aserehe.
+Berikut adalah deskripsi lengkap mengenai karakteristik Wedang Sere khas pesisir Tuban:
+1. Profil Rasa dan Aroma
+Berbeda dengan wedang serai daerah lain yang cenderung manis-pedas murni, Wedang Sere pesisir Tuban memiliki kombinasi rasa yang sangat kaya: pedas, manis, sekaligus segar-asam.
+• Rasa Pedas dan Hangat: Dihasilkan dari jahe yang biasanya dibakar dan digeprek terlebih dahulu.
+• Rasa Segar-Asam: Berasal dari penggunaan asam jawa yang memberikan sensasi menyegarkan di tenggorokan, sangat cocok dengan kultur kuliner pesisir yang gemar memadukan rasa kuat.
+• Rasa Manis Gurih: Menggunakan gula merah (gula aren/jawa) yang menghasilkan rasa manis legit alami yang lembut.
+Sumber: Kompas.com`
+            },
+            {
+                nama: "Wedang Gombloh",
+                foto: "m8.jpg",
+                teks: `Wedang Gombloh adalah salah satu minuman tradisional khas dari Kabupaten Tuban, Jawa Timur. Minuman herbal berbasis rempah ini dikenal memiliki khasiat menghangatkan tubuh dan menjaga daya tahan tubuh, terutama saat cuaca dingin.
+Berikut adalah deskripsi profil dan karakteristik dari Wedang Gombloh Tuban:
+1. Komposisi Bahan Utama
+Wedang Gombloh terbuat dari kombinasi bahan-bahan alami dan kaya rempah, di antaranya:
+• Daun Jeruk Segar: Menjadi bahan utama pembentuk aroma segar yang dominan pada minuman ini.
+• Rempah-rempah Pendukung: Menggunakan tanaman herbal nusantara untuk memberikan cita rasa hangat di tubuh.
+• Pemanis Alami: Air rebusan rempah dipadukan dengan larutan gula (biasanya gula merah atau gula pasir) untuk menyeimbangkan rasa.
+Sumber: cookpad.com`
+            },
+            {
+                nama: "Dawet geplak ayu",
+                foto: "m9.jpg",
+                teks: `Dawet Geplak Ayu adalah salah satu kuliner minuman tradisional khas dari Kabupaten Tuban, Jawa Timur.
+
+Karakteristik dan Komposisi
+• Cendol Dawet: Terbuat dari tepung beras atau tepung sagu murni dengan pewarna alami dari perasan daun pandan wangi.
+• Isian Khas (Buah Siwalan): Berbeda dengan dawet dari daerah lain, isian utamanya dipadukan atau ditambahkan irisan daging buah siwalan (ental) khas Tuban yang kenyal, lembut, dan dingin alami.
+• Pemanis (Gula Aren / Legen): Menggunakan gula kelapa atau gula aren cair yang legit, serta terkadang dipadukan dengan sentuhan rasa manis dari air nira legen khas Tuban.
+• Santan: Disiram dengan santan kelapa segar yang gurih untuk menyeimbangkan rasa manis.
+Sumber: Doyan Ayam!`
+            },
+            {
+                nama: "Beras kencur",
+                foto: "m10.jpg",
+                teks: `Beras kencur khas Tuban pada dasarnya merupakan minuman tradisional berupa jamu atau penyegar tubuh yang juga populer disajikan sebagai es beras kencur di berbagai rumah makan khas Tuban (seperti di Kuliner Tuban Rajungan NDOROBEI, Faleeha Seafood, dan Warung Apung Rahmawati).
+
+Karakteristik dan Komposisi
+• Bahan Utama: Terbuat dari perpaduan rimpang kencur segar dan rendaman beras yang dihaluskan bersama.
+• Rempah Tambahan: Umumnya dicampur dengan jahe, daun pandan, gula merah (gula jawa/aren), sedikit garam, dan terkadang asam jawa untuk memperkaya rasa.
+• Cita Rasa: Memiliki perpaduan rasa manis dari gula merah, sensasi hangat serta sedikit pedas khas jahe dan kencur, serta tekstur pekat dari endapan sari beras.
+• Penyajian: Sangat populer dinikmati dalam kondisi dingin (es beras kencur) yang terasa segar, terutama saat menyantap kuliner khas Tuban yang bercita rasa pedas dan kaya rempah (seperti becek mentok atau olahan rajungan).
+Sumber: RRI`
+            },
+            {
+                nama: "Kunyit asem",
+                foto: "m11.jpg",
+                teks: `Kunyit asem khas Tuban adalah minuman tradisional berupa jamu yang diolah secara rumahan maupun semi-modern oleh masyarakat lokal, seperti di wilayah Tuban Kota dan Semanding. Minuman ini memadukan kekayaan rempah lokal dengan cita rasa segar yang khas.
+
+Karakteristik dan Komposisi
+• Bahan Utama: Menggunakan rimpang kunyit segar pilihan dan buah asam jawa matang.
+• Pemanis Alami: Umumnya menggunakan 100% gula asli, gula merah, atau gula aren lokal tanpa pemanis buatan.
+• Rasa: Perpaduan rasa asam yang segar, sentuhan hangat dan khas dari kunyit, serta manis legit dari gula aren.
+• Pengemasan: Banyak dijual dalam kemasan botol siap minum (ukuran sekitar 500 ml) yang diproduksi harian tanpa bahan pengawet.
+Sumber: RRI`
+            }
+        ];
+
+        // DAFTAR WISATA TUBAN (WISTUB)
+        const daftarWistub = [
+            {
+                nama: "Pantai Kelapa Tuban",
+                foto: "w1.jpg",
+                teks: `Pantai Kelapa Tuban adalah salah satu destinasi wisata alam andalan di Kabupaten Tuban, Jawa Timur, yang menawarkan pesona pesisir utara dengan suasana tropis yang unik dan teduh. Berbeda dengan pantai utara pada umumnya yang cenderung gersang dan panas, pantai ini justru sangat rindang karena dikelilingi oleh ribuan pohon kelapa yang tumbuh subur dan berjajar rapi di sepanjang garis pantai seluas 6 hektare. Berlokasi strategis di Jl. Raya Gresik KM 1-2, Kecamatan Palang—hanya sekitar 15 menit dari pusat Kota Tuban—pantai ini menyuguhkan pemandangan laut utara yang tenang dengan hamparan pasir luas serta perahu-perahu nelayan tradisional yang bersandar estetis di tepiannya. Pantai Kelapa tidak hanya menjadi tempat berburu sunrise dan foto yang instagramable, tetapi juga telah menjelma menjadi pusat rekreasi keluarga yang lengkap. Wisatawan dapat menikmati ragam aktivitas seru seperti berkuda menyusuri pantai, bermain ATV Bike, meluncur dengan flying fox, menyewa perahu, hingga berenang di kolam renang yang menghadap langsung ke laut lepas. Didukung dengan harga tiket masuk yang sangat terjangkau sebesar Rp10.000 per orang dan jam operasional setiap hari dari pukul 08:00 hingga 17:00 WIB, pantai ini sudah dilengkapi fasilitas penunjang yang memadai seperti area camping, gazebo, mushola, toilet, serta deretan warung kuliner yang siap memanjakan lidah pengunjung dengan kesegaran es degan langsung dari pohonnya.
+
+Sumber : https://www.pantaikelapa.com`
+            },
+            {
+                nama: "Pantai Boom",
+                foto: "w2.jpg",
+                teks: `Pantai Boom adalah destinasi wisata bahari dan sejarah yang terletak di Kelurahan Kutorejo, tepat di sebelah utara Alun-Alun Kota Tuban, Jawa Timur.
+
+Berikut adalah ringkasan singkat mengenai Pantai Boom Tuban:
+• Lokasi Strategis: Berada di pusat kota dan sangat dekat dari Alun-Alun Tuban sehingga mudah diakses.
+• Nilai Sejarah: Kawasan ini dulunya merupakan pelabuhan utama yang penting pada era Kerajaan Singasari dan Majapahit. Di area pantai, terdapat relief sejarah yang menceritakan kisah perjuangan Adipati Ronggolawe.
+• Daya Tarik Utama: Memiliki dermaga panjang menjorok ke laut sekitar 800 meter, area tepi pantai berbatuan, pohon cemara yang rindang, serta pemandangan matahari terbit (sunrise) dan terbenam (sunset).
+• Fasilitas: Tersedia gazebo, area pancing, taman bermain anak, warung kuliner, hingga penyewaan perahu.
+• Jam Buka & Harga Tiket: Buka setiap hari mulai pukul 06.00 hingga 18.00 WIB. Harga tiket masuk sangat terjangkau, yaitu Rp6.000 pada hari biasa (weekday) dan Rp8.000 pada akhir pekan (weekend).
+
+Sumber : https://tubankab.go.id/entry/pantai-boom-tuban-1`
+            },
+            {
+                nama: "Goa Akbar Tuban",
+                foto: "w3.jpg",
+                teks: `Goa Akbar Tuban adalah objek wisata alam dan religi berupa goa purba yang terletak di tengah Kota Tuban, tepatnya di Desa Gedongombo, Kecamatan Semanding, Jawa Timur.
+
+Daya Tarik Utama
+• Keindahan Alam Bawah Tanah: Goa ini memiliki panjang lorong sekitar 1,2 kilometer yang dihiasi oleh ornamen stalaktit dan stalagmit aktif meneteskan air. Di dalamnya juga terdapat aliran sungai bawah tanah dan fosil kerang purba.
+• Sejarah dan Religi: Dulu goa ini bernama Luweng Ombo dan konon menjadi tempat persinggahan atau pertapaan Sunan Kalijaga (Berandal Lokajaya) serta tempat berkumpulnya para Wali Songo. Nama "Akbar" sendiri berasal dari kekaguman Sunan Bonang saat mengucapkan "Allahu Akbar" ketika pertama kali menemukan goa ini.
+• Fasilitas Wisata: Pengelola telah menyediakan jalur penelusuran yang aman, lampu penerangan warna-warni, serta papan petunjuk arah yang jelas bagi wisatawan.
+
+Sumber : https://id.wikipedia.org/wiki/Gua_Akbar`
+            },
+            {
+                nama: "Goa Ngerong",
+                foto: "w4.jpg",
+                teks: `Goa Ngerong adalah destinasi wisata alam dan mata air yang terletak di Desa Rengel, Kecamatan Rengel, Kabupaten Tuban, Jawa Timur. Tempat ini berada di kaki bukit pegunungan kapur dan terkenal dengan keindahan mata air jernih, populasi kelelawar, serta ribuan ikan [bader dan nila] yang dikeramatkan oleh warga.
+
+Daya Tarik dan Keunikan
+• Ribuan Ikan Keramat: Sungai di dalam kawasan goa dihuni oleh ribuan ikan air tawar. Pengunjung bisa memberi makan ikan-ikan ini dengan membeli biji kapas atau pakan yang dijual di sekitar lokasi.
+• Mitos dan Pantangan: Terdapat kepercayaan kuat di masyarakat bahwa mengambil atau memakan ikan dan hewan dari sungai goa ini dapat mendatangkan malapetaka atau musibah. Hal ini membuat populasi ikan tetap terjaga.
+• Habitat Kelelawar: Goa ini merupakan rumah bagi ribuan kelelawar yang bergelantungan di dinding-dinding bagian dalam goa.
+• Wisata Air: Airnya yang jernih dan kebiruan sering dimanfaatkan pengunjung untuk berendam, bermain air, atau terapi relaksasi bersama ikan-ikan.
+
+Lokasi dan Informasi Kunjungan
+• Alamat: Jalan Raya Rengel Nomor 155, Desa Rengel, Kecamatan Rengel, Kabupaten Tuban, Jawa Timur.
+• Tiket Masuk: Berkisar antara Rp3.000 hingga Rp7.000 per orang [tergantung hari dan ketentuan pengelola lokal].
+• Fasilitas: Tersedia area parkir, warung makan, tempat duduk santai dari bambu, penyewaan pelampung, serta toilet.
+
+Sumber : https://iainutuban.ac.id/2024/01/20/sejarah-goa-ngerong-di-rengel/`
+            },
+            {
+                nama: "Makam Sunan Bonang",
+                foto: "w5.jpg",
+                teks: `Makam Sunan Bonang di Kabupaten Tuban adalah salah satu pusat wisata religi dan sejarah Islam paling populer di Pulau Jawa.
+
+Informasi Singkat
+• Lokasi: Kelurahan Kutorejo, Kecamatan Tuban, persis di sebelah barat Masjid Agung Tuban dan dekat Alun-alun Tuban.
+• Tokoh: Sunan Bonang atau Raden Makdum Ibrahim, seorang wali dari kelompok Wali Songo yang wafat pada tahun 1525 M. Beliau adalah putra dari Sunan Ampel.
+• Daya Tarik: Kompleks makam memiliki arsitektur khas berupa pendopo semi-terbuka berlantai marmer,gapura kuno, serta Sumur Qur'an.
+• Tiket Masuk: Gratis (hanya perlu membayar biaya parkir kendaraan).
+• Jam Buka: Setiap hari selama 24 jam.
+
+Keunikan dan Dakwah
+• Media Seni: Sunan Bonang berdakwah menggunakan pendekatan budaya, seperti menciptakan alat musik gamelan bonang serta tembhang religi terkenal berjudul Tombo Ati.
+• Tujuan Peziarah: Tempat ini ramai dikunjungi peziarah dari berbagai daerah, terutama menjelang bulan suci Ramadhan atau hari besar Islam, untuk berdoa dan mengenang sejarah penyebaran agama Islam.
+
+Sumber : https://www.detik.com/jatim/wisata/d-7322087/daya-tarik-wisata-religi-makam-sunan-bonang-tuban`
+            },
+            {
+                nama: "Klenteng Kwan Sing Bio",
+                foto: "w6.jpg",
+                teks: `Klenteng Kwan Sing Bio yang terletak di Jalan Raya R.E. Martadinata No. 1, Karangsari, Kota Tuban, Jawa Timur, merupakan salah satu destinasi wisata religi paling ikonik di Indonesia. Didirikan sekitar tahun 1773, tempat ibadah bagi umat Tri Dharma (Buddha, Tao, dan Konghucu) ini dibangun di atas lahan megah seluas 4 hingga 5 hektare, menjadikannya dinobatkan sebagai salah satu klenteng terbesar di Asia Tenggara.
+
+Berikut beberapa keunikan utama dari Klenteng Kwan Sing Bio Tuban:
+• Satu-satunya yang Menghadap Laut: Klenteng ini memiliki tata letak yang unik karena dibangun tepat di tepi jalur Pantura dan langsung menghadap ke pesisir Laut Jawa.
+• Gerbang Kepiting Raksasa: Berbeda dari kebanyakan klenteng yang menggunakan simbol naga pada pintu masuknya, gerbang utama klenteng ini dihiasi oleh patung kepiting raksasa. Simbol ini terinspirasi dari sejarah area klenteng yang dulunya merupakan kawasan tambak penghasil kepiting.
+• Pemujaan Dewa Kwan Kong: Dewa utama yang dipuja di sini adalah Dewa Kwan Sing Tee Koen (Dewa Kwan Kong), yang melambangkan kesetiaan, keadilan, dan kejujuran.
+• Fasilitas Wisata & Budaya: Kompleks ini memiliki berbagai bangunan megah bernuansa Tionghoa berhiaskan lampion, jembatan berlekuk sembilan khas Tiongkok, hingga penginapan bagi para peziarah yang datang dari dalam maupun luar negeri.
+
+Setiap perayaan besar seperti Imlek atau hari ulang tahun dewa utama, klenteng ini selalu dipadati oleh ribuan wisatawan untuk menyaksikan berbagai festival budaya seperti pertunjukan barongsai dan kembang api.
+
+Sumber : https://www.traveloka.com/id-id/explore/activities/klenteng-tuban-jawa-timur-ta/554703`
+            },
+            {
+                nama: "Air Terjun Putri Nglirip",
+                foto: "w7.jpg",
+                teks: `Air Terjun Putri Nglirip adalah destinasi wisata alam andalan di Kabupaten Tuban, Jawa Timur, yang terkenal dengan airnya yang jernih dan berwarna hijau toska.
+
+Lokasi dan Rute
+• Tempat ini terletak di Dusun Jojogan, Desa Mulyoagung, Kecamatan Singgahan, Kabupaten Tuban.
+• Jaraknya sekitar 37 kilometer dari pusat kota Tuban ke arah barat daya.
+
+Keindahan Alam
+• Air terjun ini memiliki ketinggian sekitar 23 hingga 30 meter.
+• Airnya bersumber dari Hutan Lindung Krawak.
+• Suasana di sekitar sangat asri dan sejuk karena dikelilingi oleh pepohonan yang rindang.
+• Air kolam di bawahnya terlihat sangat segar dengan nuansa warna biru kehijauan atau hijau toska, terutama saat musim kemarau.
+
+Daya Tarik dan Mitos
+• Pengunjung bisa menikmati keindahan alam sambil bermain air yang segar di alam bebas.
+• Terdapat legenda lokal tentang seorang putri bernama Putri Nglirip yang berkaitan dengan sejarah tempat ini.
+• Di sekitar kawasan ini juga terdapat makam religi Syekh Abdul Jabbar.
+• Wisatawan dapat mencicipi kuliner khas setempat di dekat lokasi, seperti rujak betis.
+
+Sumber : https://indonesiakaya.com/pustaka-indonesia/mengagumi-keindahan-air-terjun-nglirip-di-tuban/`
+            },
+            {
+                nama: "Pemandian Alam Bektiharjo",
+                foto: "w8.jpg",
+                teks: `Pemandian Alam Bektiharjo adalah objek wisata pemandian legendaris berbalut sumber mata air alami yang terletak di Desa Bektiharjo, Kecamatan Semanding, Kabupaten Tuban, sekitar 5 km dari pusat kota Tuban.
+
+Daya Tarik Utama
+• Sumber Mata Air Alami: Memiliki air yang sangat jernih, sejuk, dan terus mengalir dari sendang (mata air) purba yang dikelilingi pohon-pohon besar.
+• Sejarah Panjang: Tempat ini sudah ada sejak abad ke-13 dan dahulu dibuat oleh Raden Danur Wendo sebagai sumber air minum.
+• Kehadiran Kera Liar: Kawasan sekitar pemandian dihuni oleh sekumpulan kera jinak yang menjadi ciri khas tersendiri bagi pengunjung.
+• Tradisi Manganan: Warga dari lima desa sekitar rutin menggelar tradisi sedekah bumi atau Manganan di area sendang sebagai wujud syukur atas limpahan air.
+
+Informasi Kunjungan
+• Jam Buka: Pukul 07.00 – 17.00 WIB setiap hari.
+• Harga Tiket Masuk:
+    • Senin – Jumat: Rp8.000 (dewasa) dan Rp5.000 (anak-anak).
+    • Sabtu, Minggu, & Libur Nasional: Rp10.000 (dewasa) dan Rp6.000 (anak-anak).
+• Fasilitas: Area parkir, warung makan, gazebo, toilet, tempat ibadah, serta kolam renang anak dan dewasa.
+
+Sumber : https://sidita.disbudpar.jatimprov.go.id/destinasi/detail/f8c742b832f4366b4e9e23eb55f6abd7874f1ac9f33234e7b881c7606e1ccca8753ed13e69b550e7f34fd6b8c76668a8d36f07b7d7a10d57efc0b9907d9c4243`
+            },
+            {
+                nama: "Agrowisata Belimbing Tasikmadu",
+                foto: "w9.jpg",
+                teks: `Agrowisata Belimbing Tasikmadu di Kabupaten Tuban adalah kawasan sentra perkebunan buah belimbing unggulan di mana pengunjung dapat menikmati pengalaman memetik buah segar langsung dari pohonnya.
+
+Daya Tarik Utama
+• Wisata Petik Buah: Pengunjung bisa masuk ke area perkebunan dan memetik sendiri buah belimbing yang matang dan segar.
+• Kualitas Unggulan: Belimbing Tasikmadu terkenal berukuran besar, berwarna cerah, dan memiliki rasa yang sangat manis seperti madu bahkan saat buahnya masih muda.
+• Wisata Edukasi: Tempat ini sering dimanfaatkan sebagai sarana belajar budidaya tanaman hortikultura, khususnya perawatan dan pengembangan varietas belimbing lokal berkualitas tinggi.
+
+Lokasi
+• Alamat: Desa Tasikmadu, Kecamatan Palang, Kabupaten Tuban, Jawa Timur.
+• Kawasan: Menjadi bagian dari wilayah agropolitan yang dikelola secara produktif dan ditetapkan sebagai salah satu produk hortikultura andalan nasional.
+
+Sumber :https://tubankab.go.id/entry/belimbing-tasikmadu-masuk-produk-unggulan-nasional`
+            },
+            {
+                nama: "Museum Kambang Putih",
+                foto: "w10.jpg",
+                teks: `Museum Kambang Putih adalah satu-satunya museum resmi di Kabupaten Tuban yang menyimpan ribuan benda bersejarah, arkeologi, dan budaya lokal.
+
+Lokasi dan Sejarah Singkat
+• Alamat: Jalan R.A. Kartini No. 3, Kelurahan Kutorejo, Kecamatan Tuban, Jawa Timur.
+• Letak Strategis: Berada di pusat kota, tepatnya di sebelah barat Kantor Bupati Tuban, dekat Alun-Alun Tuban, Pantai Boom, dan kompleks makam Sunan Bonang.
+• Peresmian: Pertama kali diresmikan pada 25 Agustus 1984 di kompleks Pendopo Krido Manunggal, lalu dipindahkan ke lokasi saat ini dan diresmikan ulang oleh Gubernur Jawa Timur Basofi Soedirman pada 15 Januari 1996.
+
+Koleksi Utama
+• Jumlah Koleksi: Menyimpan lebih dari 5.700 item benda bersejarah.
+• Ragam Barang: Arca kuno peninggalan era Majapahit, fosil purbakala (seperti fosil badak purba), alat-alat maritim dari Pantai Boom, uang kuno abad ke-19 hingga ke-20, serta perlengkapan nelayan tradisional.
+• Asal Nama: Istilah "Kambang Putih" diambil dari prasasti Raja Sri Mapanji Garasakan tahun 1050 Masehi yang menandai Tuban sebagai kawasan pelabuhan penting.
+
+Sumber : https://tubankab.go.id/entry/museum-kambang-putih`
+            },
+            {
+                nama: "Masjid Aschabul Kahfi Perut Bumi Al-Maghribi",
+                foto: "w11.jpg",
+                teks: `Masjid Aschabul Kahfi Perut Bumi Al-Maghribi adalah destinasi wisata religi unik di Tuban yang terletak sekitar 20 meter di bawah permukaan tanah di dalam gua alami.
+
+Daya Tarik Utama
+• Lokasi Bawah Tanah: Berada di dalam gua dengan kedalaman 20 meter di bawah tanah di Kelurahan Gedongombo, Kecamatan Semanding.
+• Arsitektur Unik: Memadukan nuansa negeri dongeng 1001 Malam, ornamen kaligrafi Arab-Jawa, serta pilar marmer di antara stalaktit dan stalagmit alami.
+• Sejarah Tempat: Didirikan pada tahun 2002 oleh K.H. Subhan Mubarok di atas lahan yang sebelumnya merupakan tempat pembuangan sampah.
+
+Informasi Kunjungan
+• Tiket Masuk: Gratis, pengunjung umumnya hanya perlu membayar biaya parkir kendaraan dan beramal seikhlasnya.
+• Aktivitas: Tempat peziarah berdoa, berwisata religi, melihat pondok pesantren, dan berfoto.
+
+Sumber : https://www.youtube.com/watch?v=zALoJE1WC3c&t=4`
+            }
+        ];
+
+        // DAFTAR KESENIAN TUBAN (KASTUB)
+        const daftarKastub = [
+            {
+                nama: "Sandur",
+                foto: "k1.jpg",
+                teks: `Sandur adalah seni pertunjukan teater tradisional kerakyatan dan drama tari agraris asal Kabupaten Tuban dan Bojonegoro yang lahir dari tradisi syukur masyarakat petani.
+
+Karakteristik Utama
+• Asal & Fungsi: Berakar dari ritual bersih desa atau sedekah bumi setelah musim panen. Kesenian ini berfungsi sebagai hiburan, pemelihara kebersamaan, dan sarana kritik sosial.
+• Pementasan: Digelar di tanah lapang pada malam hari (biasanya pukul 21.00 hingga 03.00 WIB) dalam arena berbentuk lingkaran berukuran 8x8 meter yang disebut Blabar Janur Kuning.
+• Tokoh Utama: Dimainkan oleh empat orang anak laki-laki yang belum dikhitan, yaitu tokoh Balong, Pethak, Cawik, dan Tangsil, serta atraksi puncak Kalongking di atas bambu tinggi.
+• Status: Telah ditetapkan sebagai Warisan Budaya Takbenda Indonesia pada tahun 2018.
+
+Sumber: https://kabartuban.com/sejarah-kesenian-sandur-dari-kota-tuban/33505`
+            },
+            {
+                nama: "Kentrung",
+                foto: "k2.jpg",
+                teks: `Kentrung adalah seni sastra lisan atau seni bertutur tradisional khas masyarakat pesisir utara Jawa, termasuk di Kabupaten Tuban yang dikenal dengan varian lokal bernama Kentrung Bate.
+
+Karakteristik Utama
+• Seni Bertutur: Pertunjukan berupa cerita lisan atau storytelling yang dibawakan oleh seorang seniman sambil menyampaikan pesan moral, sejarah, atau keagamaan.
+• Iringan Musik: Menggunakan alat musik sederhana seperti instrumen timlung (kentheng) serta dua buah terbang besar atau rebana.
+• Lakon Cerita: Membawakan berbagai kisah klasik dan legenda, seperti kisah Anglingdarma, Mursodo Maling, hingga cerita-cerita nabi.
+
+Sejarah dan Perkembangan di Tuban
+• Media Dakwah: Di Tuban, khususnya melalui Kentrung Bate dari Desa Bate, Kecamatan Bangilan, kesenian ini dipopulerkan oleh Kiai Basiman pada tahun 1930-an sebagai sarana syiar Islam.
+• Kondisi Saat Ini: Kesenian tradisional ini kini menghadapi tantangan besar karena minimnya regenerasi dan usia para pemain yang sudah lanjut.
+
+Sumber: https://id.wikipedia.org/wiki/Kentrung`
+            },
+            {
+                nama: "Wayang Krucil Tuban",
+                foto: "k3.jpg",
+                teks: `Wayang Krucil Tuban adalah seni pertunjukan tradisional berupa boneka pipih dua dimensi dari kayu yang telah ditetapkan sebagai Warisan Budaya Takbenda (WBTb).
+
+Ciri Khas dan Bentuk
+• Bahan dan Bentuk: Terbuat dari ukiran kayu (seperti kayu pule atau mentaos) dengan ketebalan tipis, sementara bagian lengannya terbuat dari kulit agar mudah digerakkan oleh dalang. Ukurannya relatif kecil (sekitar 30 cm).
+• Tanpa Kelir: Tidak menggunakan layar kain (kelir) atau batang pohon pisang (gedebog), melainkan ditancapkan pada bilah kayu atau bambu berlubang yang disebut slanggan.
+• Musik Pengiring: Diiringi seperangkat gamelan laras slendro sederhana serta tembang macapat yang dilantunkan langsung oleh dalang.
+
+Cerita dan Perkembangan
+• Lakon Cerita: Membawakan cerita rakyat, epos Panji, kisah Menak, hingga Babad Majapahit yang dekat dengan sejarah dan kearifan lokal masyarakat agraris pesisir utara Jawa.
+• Status Konservasi: Kesenian ini tumbuh subur di daerah seperti Kecamatan Kerek, Tuban, namun kini kondisinya semakin langka dan mulai terpencil seiring perkembangan zaman.
+
+Sumber: https://www.youtube.com/watch?v=RGlMN9k7BB4`
+            },
+            {
+                nama: "Kesenian Tayub Tuban",
+                foto: "k4.jpg",
+                teks: `Kesenian Tayub Tuban adalah seni pertunjukan tradisional berupa tari berpasangan antara penari wanita dan laki-laki yang diiringi alunan musik gamelan dan sangat populer di Kabupaten Tuban.
+
+Karakteristik dan Pelaksanaan
+• Gerakan Tari: Penari wanita utama (disebut ledhek atau tledek) menarikan gerakan anggun sambil mengenakan selendang (sampur).
+• Interaksi: Penari wanita akan melingkarkan selendangnya ke leher atau pinggang penari pria dari kalangan penonton sebagai tanda mengajak menari bersama.
+• Waktu Pentas: Dahulu sering diadakan malam hari hingga dini hari pada acara hajatan warga.
+
+Fungsi dan Makna
+• Ungkapan Syukur: Digelar sebagai bentuk rasa syukur atas limpahan hasil panen atau rezeki dari Tuhan.
+• Tradisi Adat: Sering ditampilkan dalam acara bersih desa, pernikahan, khitanan, hingga nadar atau hajat tertentu.
+• Identitas Lokal: Menjadi bagian dari kearifan lokal dan identitas budaya masyarakat Tuban yang terus dijaga kelestariannya di tengah zaman modern.
+
+Sumber: https://versilama.budaya-indonesia.org/tayub`
+            },
+            {
+                nama: "Seni Thak-thak'an",
+                foto: "k5.jpg",
+                teks: `Seni Thak-thak'an adalah kesenian tradisional berupa tari kerakyatan mirip barongan yang berasal dari Kabupaten Tuban, terutama berkembang di wilayah pesisir seperti Kecamatan Tambakboyo.
+
+Karakteristik Utama
+• Asal Nama: Nama "thak-thak'an" diambil dari bunyi "thak-thak" yang bersumber dari benturan rahang atas dan bawah pada topeng kayu penarinya.
+• Bentuk Pertunjukan: Penari mengenakan topeng besar berbentuk makhluk atau hewan tertentu, diiringi alunan musik tradisional, dengan gerakan tari yang dinamis dan ekspresif.
+• Makna & Tradisi: Dahulu, masyarakat mempercayai pementasan Seni Thak-Thak'an Tambakboyo sebagai sarana ritual tolak bala, meruwat desa, atau mengusir gangguan roh halus.
+• Perkembangan: Saat ini, Kesenian Thak-Thakan tidak hanya menjadi bagian dari tradisi sedekah bumi, tetapi juga mulai sering diangkat dalam berbagai festival budaya regional hingga nasional.
+
+Sumber: https://iainutuban.ac.id/2025/12/31/seni-thak-thakan-tambakboyo-warisan-leluhur-spirit-tolak-bala-dan-kreativitas-generasi-baru/`
+            }
+        ];
+
+        // FUNGSI PENDUKUNG FOTO
+        function cobaMuatFoto(imgElement, daftarFoto, index = 0) {
+            if (index >= daftarFoto.length) {
+                imgElement.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
+                return;
+            }
+            imgElement.src = daftarFoto[index];
+            imgElement.onerror = function() {
+                cobaMuatFoto(imgElement, daftarFoto, index + 1);
+            };
+        }
+
+        // Semua data tetap menggunakan daftar asli; tampilan diubah menjadi folder buka/tutup.
+        function buatFolderInfo(item, kategori, idx) {
+            const fotoList = Array.isArray(item.foto) ? item.foto : (item.foto ? [item.foto] : []);
+            const folder = document.createElement('details');
+            folder.className = 'info-folder';
+            const summary = document.createElement('summary');
+            const ikon = kategori === 'makstub' ? '🥘' : kategori === 'minstub' ? '🍹' : kategori === 'wistub' ? '🏞️' : '🎭';
+            summary.innerHTML = `<span class="folder-icon">${ikon}</span><span class="folder-heading"><strong></strong><small>Klik untuk membuka informasi</small></span>`;
+            summary.querySelector('strong').textContent = item.nama;
+            folder.appendChild(summary);
+
+            const content = document.createElement('div');
+            content.className = 'folder-content';
+            if (fotoList.length) {
+                const img = document.createElement('img');
+                img.className = 'item-foto';
+                img.alt = item.nama;
+                img.src = fotoList[0];
+                img.onerror = function () {
+                    const next = Number(this.dataset.photoIndex || 0) + 1;
+                    if (next < fotoList.length) {
+                        this.dataset.photoIndex = next;
+                        this.src = fotoList[next];
+                    } else {
+                        this.onerror = null;
+                        this.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
+                    }
+                };
+                content.appendChild(img);
+            }
+            const teks = document.createElement('div');
+            teks.className = 'item-teks-lengkap';
+            // textContent menjaga isi informasi tetap tampil sebagai teks dan tidak mengubah datanya.
+            teks.textContent = item.teks || '';
+            content.appendChild(teks);
+            folder.appendChild(content);
+            return folder;
+        }
+
+        function renderDaftarFolder(data, containerId, kategori, labelKosong) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            if (!data.length) {
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:#888;">${labelKosong}</div>`;
+                return;
+            }
+            data.forEach((item, idx) => container.appendChild(buatFolderInfo(item, kategori, idx)));
+        }
+
+        function renderMakstub(data = daftarMakstub) { renderDaftarFolder(data, 'makstubList', 'makstub', 'Makanan tidak ditemukan.'); }
+        function cariMakstub() {
+            const input = document.getElementById('searchMakstub').value.toLowerCase();
+            renderMakstub(daftarMakstub.filter(item => item.nama.toLowerCase().includes(input) || item.teks.toLowerCase().includes(input)));
+        }
+
+        function renderMinstub(data = daftarMinstub) { renderDaftarFolder(data, 'minstubList', 'minstub', 'Minuman tidak ditemukan.'); }
+        function cariMinstub() {
+            const input = document.getElementById('searchMinstub').value.toLowerCase();
+            renderMinstub(daftarMinstub.filter(item => item.nama.toLowerCase().includes(input) || item.teks.toLowerCase().includes(input)));
+        }
+
+        function renderWistub(data = daftarWistub) { renderDaftarFolder(data, 'wistubList', 'wistub', 'Wisata tidak ditemukan.'); }
+        function cariWistub() {
+            const input = document.getElementById('searchWistub').value.toLowerCase();
+            renderWistub(daftarWistub.filter(item => item.nama.toLowerCase().includes(input) || item.teks.toLowerCase().includes(input)));
+        }
+
+        function renderKastub(data = daftarKastub) { renderDaftarFolder(data, 'kastubList', 'kastub', 'Kesenian tidak ditemukan.'); }
+        function cariKastub() {
+            const input = document.getElementById('searchKastub').value.toLowerCase();
+            renderKastub(daftarKastub.filter(item => item.nama.toLowerCase().includes(input) || item.teks.toLowerCase().includes(input)));
+        }
+
+        // --- SISTEM AKUMULASI POIN BUDAYA ---
+        let totalPoinUser = 0;
+
+        function tambahPoin(nilai) {
+            totalPoinUser += nilai;
+            document.getElementById('total-poin-display').innerText = totalPoinUser;
+        }
+
+        // --- SISTEM NAVIGASI LOBI MINI GAME ---
+        function pilihGame(namaGame) {
+            document.getElementById('game-lobby').classList.add('hidden');
+
+            if (namaGame === 'puzzle') {
+                document.getElementById('subgame-puzzle').classList.remove('hidden');
+                inisialisasiPuzzle();
+            } else if (namaGame === 'kuis') {
+                document.getElementById('subgame-kuis').classList.remove('hidden');
+                mulaiMiniGame();
+            }
+        }
+
+        function kembaliKeLobbyGame() {
+            document.getElementById('subgame-puzzle').classList.add('hidden');
+            document.getElementById('subgame-kuis').classList.add('hidden');
+            document.getElementById('game-lobby').classList.remove('hidden');
+        }
+
+        // --- SISTEM PUZZLE 3x5 ---
+        let gambarBatikPuzzle = "./puzzle.jpg";
+
+        function gantiFotoDariGaleri(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    gambarBatikPuzzle = e.target.result;
+                    const previewEl = document.getElementById('puzzle-preview-img');
+                    if (previewEl) previewEl.src = e.target.result;
+                    inisialisasiPuzzle();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        let susunanPuzzle = Array.from({length: 15}, (_, i) => i);
+        let tileTerpilih = null;
+        let langkahPuzzle = 0;
+        let puzzleSelesai = false;
+
+        function inisialisasiPuzzle() {
+            langkahPuzzle = 0;
+            puzzleSelesai = false;
+            tileTerpilih = null;
+            document.getElementById('puzzle-moves-display').innerText = "Langkah: 0";
+            document.getElementById('puzzle-feedback').innerHTML = "";
+            acakPuzzle();
+        }
+
+        function acakPuzzle() {
+            langkahPuzzle = 0;
+            puzzleSelesai = false;
+            tileTerpilih = null;
+            document.getElementById('puzzle-moves-display').innerText = "Langkah: 0";
+            document.getElementById('puzzle-feedback').innerHTML = "";
+
+            do {
+                susunanPuzzle.sort(() => Math.random() - 0.5);
+            } while (cekApakahMenang());
+
+            renderPapanPuzzle();
+        }
+
+        function renderPapanPuzzle() {
+            const board = document.getElementById('puzzle-board');
+            if (!board) return;
+            board.innerHTML = "";
+
+            susunanPuzzle.forEach((posisiAsli, indexSekarang) => {
+                const tile = document.createElement('div');
+                tile.className = "puzzle-tile";
+                if (tileTerpilih === indexSekarang) {
+                    tile.classList.add('selected');
+                }
+
+                const baris = Math.floor(posisiAsli / 3);
+                const kolom = posisiAsli % 3;
+                const x = -(kolom * 86);
+                const y = -(baris * 68);
+                
+                tile.style.backgroundImage = `url('${gambarBatikPuzzle}')`;
+                tile.style.backgroundPosition = `${x}px ${y}px`;
+
+                tile.onclick = () => klikTilePuzzle(indexSekarang);
+                board.appendChild(tile);
+            });
+        }
+
+        function klikTilePuzzle(index) {
+            if (puzzleSelesai) return;
+
+            if (tileTerpilih === null) {
+                tileTerpilih = index;
+                renderPapanPuzzle();
+            } else if (tileTerpilih === index) {
+                tileTerpilih = null;
+                renderPapanPuzzle();
+            } else {
+                const temp = susunanPuzzle[tileTerpilih];
+                susunanPuzzle[tileTerpilih] = susunanPuzzle[index];
+                susunanPuzzle[index] = temp;
+
+                langkahPuzzle++;
+                document.getElementById('puzzle-moves-display').innerText = `Langkah: ${langkahPuzzle}`;
+                tileTerpilih = null;
+                renderPapanPuzzle();
+
+                if (cekApakahMenang()) {
+                    puzzleSelesai = true;
+                    tambahPoin(100);
+                    document.getElementById('puzzle-feedback').innerHTML = 
+                        `<span style="color: var(--success); font-weight: bold; font-size: 0.95rem;">
+                            🎉 SELAMAT! Kain Batik Berhasil Dirakit!<br>
+                            Kamu Mendapatkan <b>+100 Poin Budaya</b>! 🌟
+                        </span>`;
+                }
+            }
+        }
+
+        function cekApakahMenang() {
+            for (let i = 0; i < 15; i++) {
+                if (susunanPuzzle[i] !== i) return false;
+            }
+            return true;
+        }
+
+        // --- SISTEM KUIS BUDAYA ---
+        const soalGame = [
+            {
+                soal: "Camilan khas Tuban yang terbuat dari 100% tanah liat murni tanpa bahan tambahan disebut apa?",
+                opsi: ["Ampo", "Gemblong", "Dumbek", "Serabeh Selong"],
+                jawaban: 0
+            },
+            {
+                soal: "Dari manakah asal usul bunyi kata 'Gedog' pada nama Batik Gedog Tuban?",
+                opsi: ["Bunyi ombak pesisir Tuban", "Bunyi 'dog... dog...' kayu alat tenun", "Bunyi kentongan penjaga desa", "Bunyi tabuhan rebana Sunan Bonang"],
+                jawaban: 1
+            },
+            {
+                soal: "Kudapan manis legit terbungkus daun lontar muda berbentuk spiral corong terompet adalah...",
+                opsi: ["Pelas Palang", "Dumbek", "Serabi Lodeh", "Jenang Bonang"],
+                jawaban: 1
+            },
+            {
+                soal: "Motif Batik Gedog yang memiliki makna menolak bahaya serta penyakit adalah motif...",
+                opsi: ["Burung Lokcan", "Kembang Kates", "Gringsing", "Unyeng-Unyeng"],
+                jawaban: 2
+            },
+            {
+                soal: "Bumbu khas beraroma harum tebal yang menjadi ciri wajib olahan Becek Menthok khas Tuban adalah...",
+                opsi: ["Kayu Mesoyi", "Kluwek", "Kayu Manis", "Asam Kandis"],
+                jawaban: 0
+            },
+            {
+                soal: "Kuliner pesisir Palang yang menggunakan rumput laut kenyal rebus berpadu bumbu petis disebut...",
+                opsi: ["Rujak Cingur", "Rujak Engos-Engos", "Pentol Ikan Bancar", "Pelas Palang"],
+                jawaban: 1
+            }
+        ];
+
+        let indexSoal = 0;
+
+        function mulaiMiniGame() {
+            indexSoal = 0;
+            tampilkanSoal();
+        }
+
+        function tampilkanSoal() {
+            const containerOpsi = document.getElementById('game-options-container');
+            const teksSoal = document.getElementById('game-question-text');
+            const teksFeedback = document.getElementById('game-feedback-text');
+            const btnNext = document.getElementById('btn-next-question');
+
+            teksFeedback.innerText = "";
+            btnNext.classList.add('hidden');
+            containerOpsi.innerHTML = "";
+
+            if (indexSoal >= soalGame.length) {
+                teksSoal.innerText = `🎉 Kuis Selesai!\nSemua pertanyaan telah dijawab.`;
+                teksFeedback.innerHTML = `<span style="color: var(--primary);">Hebat! Pengetahuanmu tentang khazanah Tuban luar biasa!</span>`;
+                btnNext.innerText = "🔄 Main Kuis Lagi";
+                btnNext.classList.remove('hidden');
+                btnNext.onclick = mulaiMiniGame;
+                return;
+            }
+
+            const current = soalGame[indexSoal];
+            teksSoal.innerText = `${indexSoal + 1}. ${current.soal}`;
+
+            current.opsi.forEach((opsi, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-option";
+                btn.innerText = opsi;
+                btn.onclick = () => pilihJawaban(idx, btn);
+                containerOpsi.appendChild(btn);
+            });
+        }
+
+        function pilihJawaban(indexDipilih, tombol) {
+            const current = soalGame[indexSoal];
+            const allBtn = document.querySelectorAll('.btn-option');
+            const teksFeedback = document.getElementById('game-feedback-text');
+            const btnNext = document.getElementById('btn-next-question');
+
+            allBtn.forEach(b => b.disabled = true);
+
+            if (indexDipilih === current.jawaban) {
+                tombol.classList.add('correct');
+                tambahPoin(20);
+                teksFeedback.innerHTML = `<span style="color: var(--success);">Benar! Kamu dapat <b>+20 Poin</b>! 🌟</span>`;
+            } else {
+                tombol.classList.add('wrong');
+                allBtn[current.jawaban].classList.add('correct');
+                teksFeedback.innerHTML = `<span style="color: var(--error);">Kurang tepat! Jawaban benar: ${current.opsi[current.jawaban]}</span>`;
+            }
+
+            btnNext.innerText = "Lanjut ➔";
+            btnNext.onclick = pertanyaanSelanjutnya;
+            btnNext.classList.remove('hidden');
+        }
+
+        function pertanyaanSelanjutnya() {
+            indexSoal++;
+            tampilkanSoal();
+        }
+
+        // FUNGSI UMUM & KAMERA
+
+        async function bukaKamera() {
+            const video = document.getElementById('webcam');
+            const status = document.getElementById('ai-scan-status');
+
+            // getUserMedia hanya tersedia pada secure context dan browser yang mendukungnya.
+            if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+                alert('Browser tidak menyediakan akses kamera untuk halaman ini. Buka GEDOG-DEX melalui HTTPS atau http://localhost, bukan pratinjau/file yang memblokir kamera.');
+                if (status) {
+                    status.textContent = 'Kamera diblokir oleh konteks halaman. Buka aplikasi melalui HTTPS atau localhost, lalu tekan Aktifkan Kamera HP lagi.';
+                    status.classList.remove('hidden');
+                }
+                return;
+            }
+
+            try {
+                // Hentikan stream sebelumnya agar tidak bentrok saat kamera dibuka ulang.
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                    video.srcObject = null;
+                }
+
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { ideal: 'environment' } },
+                        audio: false
+                    });
+                } catch (firstError) {
+                    // Fallback untuk laptop/perangkat yang tidak menyediakan kamera belakang.
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                }
+
+                video.setAttribute('playsinline', '');
+                video.muted = true;
+                video.autoplay = true;
+                video.srcObject = stream;
+                await video.play();
+                if (status) {
+                    status.textContent = 'Kamera aktif. Arahkan kamera ke motif batik, lalu tekan Pindai Motif Sekarang.';
+                    status.classList.remove('hidden');
+                }
+                const tombolMatikan = document.getElementById('btn-stop-camera');
+                if (tombolMatikan) tombolMatikan.disabled = false;
+            } catch (err) {
+                let pesan = 'Kamera tidak dapat dibuka.';
+                if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
+                    pesan = 'Izin kamera ditolak. Izinkan akses kamera pada pengaturan situs/browser, lalu coba lagi.';
+                } else if (err && (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError')) {
+                    pesan = 'Kamera tidak ditemukan pada perangkat ini.';
+                } else if (err && (err.name === 'NotReadableError' || err.name === 'TrackStartError')) {
+                    pesan = 'Kamera sedang digunakan aplikasi lain. Tutup aplikasi tersebut lalu coba lagi.';
+                } else if (err && err.name === 'OverconstrainedError') {
+                    pesan = 'Kamera belakang tidak tersedia. Coba buka kamera biasa atau periksa perangkat.';
+                }
+                alert(pesan);
+                if (status) {
+                    status.textContent = pesan;
+                    status.classList.remove('hidden');
+                }
+                console.error('GEDOG-DEX camera error:', err);
+            }
+        }
+
+
+        function matikanKamera() {
+            const video = document.getElementById('webcam');
+            const status = document.getElementById('ai-scan-status');
+            if (video && video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                video.removeAttribute('src');
+                video.load();
+            }
+            const tombolMatikan = document.getElementById('btn-stop-camera');
+            if (tombolMatikan) tombolMatikan.disabled = true;
+            if (status) {
+                status.textContent = 'Kamera sudah dimatikan. Tekan Aktifkan Kamera untuk memulai lagi.';
+                status.classList.remove('hidden');
+            }
+        }
+
+        function bukaEdukasi() {
+            sembunyikanSemuaHalaman();
+            document.getElementById('page-edukasi').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            const navBeranda = document.getElementById('nav-beranda');
+            if (navBeranda) navBeranda.classList.add('active');
+            perbaruiSubjudul('edukasi');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function tutupEdukasi() {
+            document.getElementById('page-edukasi').classList.add('hidden');
+            document.getElementById('page-beranda').classList.remove('hidden');
+            perbaruiSubjudul('beranda');
+        }
+
+        // Salam waktu ditampilkan hanya di Beranda dan diperbarui otomatis.
+        function perbaruiSalamWaktu() {
+            const target = document.getElementById('salam-waktu');
+            if (!target) return;
+            const jam = new Date().getHours();
+            let salam;
+            if (jam >= 4 && jam < 11) salam = 'Sugeng Enjing 🌅';
+            else if (jam >= 11 && jam < 15) salam = 'Sugeng Siang ☀️';
+            else if (jam >= 15 && jam < 18) salam = 'Sugeng Sonten 🌇';
+            else salam = 'Sugeng Dalu 🌙';
+            target.textContent = salam;
+        }
+
+        // Subjudul tepat di bawah GEDOG-DEX mengikuti halaman yang sedang dibuka.
+        function perbaruiSubjudul(page) {
+            const target = document.getElementById('header-subtitle');
+            if (!target) return;
+            const judul = {
+                beranda: 'Mengenal Keunikan dan Kelestarian Tuban',
+                edukasi: 'Keunikan dan Kelestarian Tuban',
+                scan: 'Batik Smart Scanner',
+                gedog: 'Ensiklopedia Batik Gedog',
+                jetub: 'Jelajah Edukasi Tuban',
+                makstub: 'Makanan Khas Tuban',
+                minstub: 'Minuman Khas Tuban',
+                wistub: 'Wisata Tuban',
+                kastub: 'Kesenian dan Budaya Tuban',
+                game: 'Permainan Edukatif Tuban',
+                peta: 'Peta Jelajah Tuban'
+            };
+            target.textContent = judul[page] || 'Jelajahi Tuban';
+        }
+
+        function sembunyikanSemuaHalaman() {
+            [
+                'beranda',
+                'scan',
+                'edukasi',
+                'gedog',
+                'peta',
+                'makstub',
+                'minstub',
+                'jetub',
+                'wistub',
+                'kastub',
+                'game'
+            ].forEach(id => {
+                const el = document.getElementById('page-' + id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+
+        function switchPage(page, el) {
+            sembunyikanSemuaHalaman();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            const targetPage = document.getElementById('page-' + page);
+            if (targetPage) targetPage.classList.remove('hidden');
+            el.classList.add('active');
+            perbaruiSubjudul(page);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (page === 'game') {
+                kembaliKeLobbyGame();
+            }
+        }
+
+        // Prototipe pencocokan visual: MobileNet membandingkan kamera dengan satu referensi batik yang tersedia.
+        // Catatan: referensi yang tersedia masih satu foto batik, bukan dataset beragam untuk semua motif.
+        const REFERENSI_BATIK = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAHgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAEAsLCwwLEAwMEBcPDQ8XGxQQEBQbHxcXFxcXHx4XGhoaGhceHiMlJyUjHi8vMzMvL0BAQEBAQEBAQEBAQEBAQAERDw8RExEVEhIVFBEUERQaFBYWFBomGhocGhomMCMeHh4eIzArLicnJy4rNTUwMDU1QEA/QEBAQEBAQEBAQEBA/8AAEQgBlAGQAwEiAAIRAQMRAf/EAJAAAAICAwEAAAAAAAAAAAAAAAUGAwQAAQIHAQEBAQAAAAAAAAAAAAAAAAAAAQIQAAIBAwMBBQUFBgUBBQcEAwECAwARBCESBTFBUSITBmFxgTIUkaFCUiOxwdFichWCkjNDJKLhslNjJfHCc4M0RBbwk6NU03QmEQEBAQEBAQEAAAAAAAAAAAAAAREhQTEC/9oADAMBAAIRAxEAPwBFHU12tcjqakiR5HWONSzsbKo1JJ7q0MArYFFMf0/nfVQJlRNHDKwDSCzWB917VfzPS0hzFTCFsdlBLOb7D0PtNVNR+kEJ5CSS2iRHX+phTZPOuPDJO9ysaliB1sKrcZxePxkBjiJZ3sZJD1Yj9gqzJEksbxSC6SAqw9hqxmhUGRz+cn1MAhx4W1iSQFmYd5reLzU8eceP5SNYZfwSqfA3aOvf30VgjMcUcfZGoT320vVLlOHi5GWCVm2NAddL71vfaaAZPnclzOU+Pxb+VixaNLfbu9pYa69gFZ5XPcOPqHm+sxU1mjJJIXtI36j4UbwsCDCWRYBYSuZCD2E9g9grjlciHH4/IaUgbo2VQerMwsAKK5y+QCccubjL5okClAWCaN2kt0tSdlauZELCYncf1hK3t+Rf3024OEknC4+JlJuVoxvU6EXO4fEVUf0yC5VMkxYx6xRoFYjuL31+NCFTIyZ8lg88hkdVChm1O0dBRL03x0OdmMZxujhUPs7GJNgDRvk+IxIuFkhgTaYrSKerM401PbfpUvAcd/bcS89lnmIL37OxUqGiyKsahVFgOgFYDY61wJkaZ4fxooZh7Gvb9lUuTygvF5ciGzRgoD/Np/GqgleuHRHUo4DKwsVPQihk/MRph4eVfw5EiK3sBB3/AGVPJn+XyUWGbbZoyyt27gen2Cgrsxx5/wC35bF8TIuMaQnxIR/tlu8fhNU5pnysTN4nKO7Lx1LRsf8AdVfEre/vqTLyE5XAz41FpcNy0ZHXwahvjY0vZXKzTZEOUo2TxR7Gf83UX+w0VZl5F8zgfJka8uNImt9SmoU/DpUknLA53GZqsGdY1Sf3lir3+2gRPdWgai4PNyaQc3nybh5MyyxnuJC2X/qFQQ8o68OkQa02HOkkV/yncfuNDosTJmVmjiZlUXJtpYG3b7622HOg8e1WG+6FgGHl/NcX+zvoCvqSeObIxMyE2aWFXuOwhjb7KbMPKXIw4srosiBz7NPF99Ia4wYrHLlRqqsqKbllCv4iykDoD1ptfHmxPThx1N5UhK39rHX7molDeKm/uXqKXNJ/TiVmS/Yo8C/tvV7luYReK83FY7slmiib2KSGYfupdgkysGDLhRAXnBiZ1YMyLGbyaLfTXrVafNlmgxoSAqYqlUt2kncSaLhmfkGf1Ji4wb9PHQo3dvZLsa3jc+pi5HOc3SN1WCLttYhftPWlRsmdpmyN5EzEsXGhuevSotxta+h6ihhp4nmRj8TmZs53zmYm35ndRt+AtVzKzp8PjcaEG/I5ttT1VpNWa38t7CkoE9L6d1XcnlsmfNXO0WSMKIx1C7BYdftoYdZM1cZ4sCEHJyyo8N+igavIx6Crybto3kbu3boL+y9AfTKLHi/V5D3yc+RtrN8zhOz7iaOrLGZGiDAyIAzL2gN0P3USpBUOVlY2JEZcmRY0HedT7AO2pgajyIo5BdoklZR4A4HX3kG1VCVz3KZPJBXWNo8BWtEWHztbqTQTtpy5Di0kb63mcgsiaRY0AIA/kXtP2UIHEZvK5PmQYww8XRU3DaFQfexqNOPTvFf3DKLyj/jQWL/zMei/xp7uqpc6KB8ABSLBNnenM90ZQysLMp+WRL6Mpoq/OvzEsXH4cbRLMw892sTsGrAW7KJTDLFFPGY5VEkbjVWFwRVZ0wuOilyhFtHWRkUs1u89tXPYOlYdaqFnkvVcLQNFgozO4KmRxtCg6aDtNKjaV6E/C8U0plbFQudTppf+npShy8g5HmDHjgFLrBCFFhYeHT41FjfC5XIYGQTBA8quAJItrC/cemhp2xZJpYRJPF5Dn/bLBjb3ipFAVQo6KAB8NK6qlrz/AJ95H5bK8w3IcqP6Rov3UMo96sw2h5DzwPBkqGB/mXwsKDw4eTPHJLDEzxwi8jAaKKioa1WzWgaiuO0++rWBlth5UeSgDNGbhT0Nxaqo6muulA5cX6j+vy0xTAI9wY7t19VF+lhV/N5nDwJ0hyN13F7qLgC9taQopZIZFkiYo6m6sNCDUk2TPkSGWdzI56s3WrqY9IDK6h0IZWF1I6EGtilr0pyDOr4EhvtG+H3fiX99MMkvloz2LEDRR1Y9gHvqxmoOSmyMZY8uK7RQt/yIx+KM6Fh7V61ZiljmRZYmDxuLqw6EUrcr/f4f+bLJsS9tkTXEYPQEdKp8XncjjrJLiOJFQ75cY9Cp6uq/ttTVzh4vVKfjMPKy0yp1MjpYIhPg0/lqpgeo8HKAWU/Tynqr/L8G/jV3NSWbGJxm/WXxwNfTevQe49KImadBkjHOkjJvXuIBsbe0VjzKkscbG3mkqv8AUBut9l6X5eV/uEKSQjyeUw23rEfx20kVe/3VznczDm8YmRGwiy8eVHEROu4fl7xTVwXkzhHy8eG58MsRKg/+IGuPuoTyHIyNxcigkZGJlgP8GZ0P7qGctyYysyHNgOx1jQ2/JIpNxVXJzJMmeeSNdoydpkQajcLH/vdKmmGRuWjXmMbIv+hnY6Lu7A249fcdKoZnIR7OVw5GsWkDxe0qVDL91CY8edwolcQxLYq0hsqh7kEDrYleypIkia9gZZNGeZrhYwSpLberFT17LUMcHKmfDXDtuiRzKptqLix+HbVn6vkp58aYIxlxlCxkA6+X49fh1qyYJpCI3mMU0byRyBfCm6b5JBb8Enymuo8EtYzF5pAb+SzHxNGNssJ7nA1Q9ooOuGd8PPkky5I0jnAEkZYEsJvErC19AetVcvi48fNfCszTOGMBJ2Ib6xgd56juq2MTCSHY4viOAXkUeJR0TIX3X2yLU/ltOq8XyTWnXXAzR0cdlmoAymERZHk4g3xqRJ5rFnVTtW4Ww1Vv21qSLIjEuwqipD5g2L88UxW4uddL0Z+nmfK3sqx8nGu2eFtI8qM6Eg+0Vx9Oq7I9fKAeFd3zeRL4Sj/zRSEfDWgHriZOTmeTJO7LujDMT2TKGb7hUcOB5kIVAGmynby2bpHDEfFI3vNEYC6OZLeLywSP5ooZI/8AvUQ4/io5twlH/HQLDbp5gi02/wBO65PeaCvxHFxZeQmQV/4GKNmMG/3nBu0h9l6Yp4kmieGQXSRSre46VqWSHFhDNZIksugsqA6D4VJVQmy4CxxNhS+CXEmG5wLM+PMQu722NSQ42dHOMV5dN80qOAN3mwjatyQey2lMHJccMtBJGAMiMELfQOh+aNvYfuNB4sktk45kBWVHKzK2jKzIYWv7yqn41FAmEMsSyyoYCbqJFG5XdQWbcL33EkdNK4m4/KiUPt8yJgSskfjUhfmII7B20Ux8eGbFwMeU7Y1M2XkHuiBt99rVxPiyObxB0y81icfEjO0RwN1Ljs3AUUFIINjoe413DE80qQxi7yMFUe0m1MCYhAklnyVkxotzZWQ8avvmZdhSItq1h299aw1GHEOVyYVGS5ZcGFV2tIzaB2Udg7LUNS8rnQ4HIcfjRG8PHBTIB3nQ/Hb+2oOP5x48nkc+UjfJHeND+bdZFHuvUWXizvPFHkwLJm5JV3WE7XVVPi3dV3P39lDxiK84iikCtu2/qaC43brMLggW60DTncs/GcRjxKf+bLGtr9VuLs5+NEOR5RcNcdPmyMlkVEHcSN7ffSNPJkNkrPnBnLbHJOhZPw27NRUmRyuTPyI5BreYrAxr1VAvyge6iYeIs6GfOyMSPVsYLubsu1/CPdWjyOOuLLlyHbFEzqT13bDt095pP47lDg4mZIGLZeSQqHtHUs5/zae2pIJTyT4XFxttxoBvlZtNzC7yMf2ChhveLGzIYzkRK6uAypIASLi/21vGwcPEucaFIi3zFRqR76Ew8vDkcrLIGtg4ELHf2FmIUt+4VJgcurYWTymUSkLSkRJ2hUACqo7yaAzVKXl8HHJXJcwOv4JAQT7VtcN8KrLywxsD6/POxpyXhxx8wXoqj29pNT4inksBJOQhQ+bdljIvtQnw9e21VALmfU31EbY2DuRG0eY6MR3KOyu/THDSCUcjkrtVR/x1PUk/jt3AdKLPx/CcchyZIo41U3DP4jf2br1Hg503K5PmxK0XHwHQnRpZOy/sXrUUWrrsrkVvsqoq8hg4+fAcfIFx1Vh8ynvFQ8Xx0fHYv0yt5l2LMxFt27v+FDvUfNS4ZGJinbK43SSdqg9APaaqcL6ijjx5YeQlYut2jka7Fhb5L99+lRXHLel1xoJsuCYsI7uYmUDw9oBHdS2OtWp+Szp4zFLkSPF+RmJHxqoOtRXA613XI6mugCSABcnQCitit0c4Thlmnlj5CF02oCitdL3Nr/CocjgcsZz42NG0kYI2yNotjrq3SqmpfSsbtye8fLHGxb46Cm8akGqHE8XHxkBUHfNJYySe7oo9gq9ew0qxm1HkwpPE8MgukgKke+kjDkfj+VjJNjFLsf2rfa33U8OaS/UEXlcpMbWElnH+Ia/fSr+TJyPp3EzHMsZ8iY9So8LHvK0I/t/PcY58h2EQudyEsh07U1/ZR7hcs5nGwyubyAbHP8yeG/xFEBfrUCLMkuTkmXJlSOZrFtiMCTt3btqga30PtrhMeDcvmRzyMbFxouo3eYATf8unxp8eOKT50Vv6gD1qBuPxH1MYBve401vuv9ophpSVZIY28jHjRowHLP8AqsxjHjK30sVbdbu1FaTGyJXUvNsZ7RqyWUCQDfCTttow6GmY8LhggpuS1rWN7benW/Ybe7Sq7enMcgqszrGQV2aaLfco/wAB6UNAYOMV44ZSS7uGHlE/7kZ8cXvZentq/GkCLZCAUVf1bfhH+jOR3WOyQVe/sU43BcgWfa5JUhhMnSVbHr31r+yZLEOZ0R9W3Kp0kPzFQfwv+JelBQnYOQHCwlf00ZtVS/XHlI/A3VHrtZTdkmBEo2rIHO0tb5N7djj8Eg0PQ1fHBm/+soW1tmy67fxRkFtU7h+HsNdrwUATY00hVT+kTa8anqgYg3X2GqB5cAlgbnd4rgId5FtQdEkPaD4HrpXg8v6ZwJMdzpA3hKt/5LN8jD8jfA1afE4OAMZZtxjWzDfuIQ6bSE/DfoDXAXjdu2Lj8idbAXZWsQNR/qNQR/VRFAmVuy8eE3TJQFciAj/xV0YW76iyZrEMrrkrPojpa8oA03KPlkUafzD21YJgL7xxDhgLKzMqn3fN0oe8OX9XFJx2GuHKfC22QMDcjsvpag2+By7qZSqwK/h/UPiJc9LKD1J7an43l+Vlnx4cfG/4q2jk0J1B8b+Z2Vxy0PKI0cCZT5Ez7t7KBGiLtAa5vcXGp7Ku+n8mRCuBIyvHsLQOoC7tp8W0dWX+Y9agNyxRzRvDIN0cgKsO8Gh/CZLtFLhTG8+C5iJPVk/AaJ0tGb6L1W4J2x5QAbu8ai3/AFCiGWl/lZ+KycllWcQ5uNqZGBCPsIbYx7SLUfoF6gwOOjxpckxEZLHd5kdyd3ewvYL30WAseYkZ2Si20Iu1wQCE8Sgjrt3kse+wFWkmhe/mO7HIPjij8WVk+xraRp/LXGJkHKw1i5HHbIxl8MeRGt5Ird7Lfp7fvrjEn2xtiwuIIlY3yUhcyToT+Jl1XSgvpFJPMvnRrNJBpDgobY2OO+Z+hI7qnHgdstpVyMsDacp/DjwD8sY7T7qpKztGIYpsUoD4YnZoUX2+W4Xef6ianbC5fR44w7AeGUyIzD/4a/JH8Beg5dSC0ce9fOG6adrLkTj2X/0o/afhUX6LRFYSqRW8uXJVfCqf+DjA6sT2ntrhuP5SxM2K8gY3MSm6sfzTPcs/uqRYM9CHlx52e1kCKAbflU/LEvu8VBqHj0PmMqiGNQLRyNeOLaDaSe+jProtV143FEiKYjKrWKKLxyuighpHBO1EJ1u2tWyMpjeSFwItUjWNjHGf/LjP+o/8zaVsJkHcohcFiDIWUyFm6jext5jezRFoA0/HLGoIcqbFixF0I3BVYEahbH5mGvZVUwSrYoQ+64/TNz26EDXUD7KYXdgG3KzNuuTtL+P83T9WTu02LVcxzBwYo5InjNgyAlk3fgVrWZ3/ABudBRQQSuI2jDWRiCwHaV6X9167fLmeOGJzeKD5I+i6m5J9poqMHLfYoiZiAPH5QIHl3tbw6gX7fm91TR8BknQYysCyX83QqL7iNylb6fN9g6UAyPMXL5COfk5CYl1YAfhXoiqOlGsn1dpswYPYGk/cq/xrcXpJCbzyBBqR5VydTcDx6aDSiuDxHH4Q3QxhpB1kbxP/ANnwonASHiuV5iVcjknaOHsDaNbuROymfHhhxoUghXbGgsqitSypDE80h2pGpZj7BS/n85mB8lMc7ApjigAF2MkniJN+4C1Ayg1s9KW4eayYZyJZA+JiqFyZWHieU9RHa2t9KYo5EljWRDuRwGUjtB1qoQeddn5TKLdQ5X4LoKHdKNeqMVoeTeS3gnAdT8LN99C8XDyMyYQ46b5CCbdBYd5NRpAawV1LFJE7RyKVdCVZT1BFcjrUVwKtYGQuLmQ5DLuWNwxXvFV161u1A+cfyuLyBcY+4eWBu3ix1+JqOLmsRs58JzsZW2o5PhZu72UoYmblYbM+NIY2cbWIsdPjUTOzMXY3Ym5PeTV1nHop9tU8zlMPB0mfxnoi6t9lVeCz5c7BaNmvkweEM2twR4WNV5uG47CjbK5SdpnY3sPDuY9gHU1dTHM3qqAXEWOze1iF/ZegPJZ0mfknIkAU2ChR0AFSZ+XjTeDFxUx4lNwR4pD72NUGqa1IkgaTcI1k8sMepYqvxtR3C4nlZR5mNnIQO2OZmt/lpeUXIF+vfRzB4DKlUTY2XDu6gxuSR/lGlCmDCXnMd1TKaPKhvYuDtkUd+oF6J+6qHH4/JwWXKyVyI7agqQw9zdvxqzkzTQx74oTPbqikK1vZfrVZc5WfiYjIMl/L8z5WIO3T+YC1Qz5czx+Zxrw5BHzRltT/AEsp/bVKXneHzIXx8xXjB0ZJFOh7wVvYilbMjix5iMacTRHVJFuDbuYaWNRcMh9T45Dw5ePLC3ysFOoP/SRQmTns6CdhjZTzQA+AyqCSPbehkuRPOVMztIVG1SxuQO6tRxSybiilgg3OQPlXvNFwUf1NyriwdU9qqL/feoTJmZQEmbPJ5R1FyWYjUXSO4vqNajhgQEqrKZhf9VifLUggq0bL1Pvq7G0UUhnLoJ2vukSdtxJ6n5D1ojWPirLGjBoEhHiOPJIVe9gDuYLfqL2q2bFQp+nAGmuTIa7xGz81rY7tIi2Dv5+i377x0bxuNSEh5ZXmb8rN4Ps0v8aoApgSZP8A9PDjTAdWEkpA+JsKL43H4PFxPlsiCVEJkkUEAAdQoYmiVgBYaDuGgoB6jz1YJxkJvLMw87aCxVe6w7e2gHfUSZMpmlRBuG9y4ZV8bXjEgGsth8qiiXEo55BXO64V2cm246bfHbp10RdF7daF4YjQzSpt67QybgFUeHVmuU3dw8R9lHOGhZEmyTtUEBEuLWC3J3dwv2dnbrUBik31PKq8wHQ3aNE3W7GBJtXPLcpn+eYxmLIg/wD65Kp7j7fjQdmLEkm5PUnU0JHpSOHVXHRgGHxF6DclM/15AuCieE2DHb1ey/jX869e0UF4HK5KNmGIRMi6vis3iZe0oD+6ivJOrZEUqh1MyB/KI2yboyRujv0kTu/EKCvg5MPHZ4AUQwZS3kUktHp0aFh1Bv29OlWM7Ez8B2mx82SPFY3ClTKsY7j10+FU8qQLEJPMEZY71ZdIZ76M0bWJikI+YUc4nNiyoDEJFkkgsjldQy28LC4HZ99AKTkMuRdrZODlqeyTwH7wK6GKJDvTFMT/AJsLJW3+QkCieZxazXaAoj/leNZEPwIuPgaE5GK+K18nGxQg/wB3y3jX/NHut8aDt8jPx1umVkJtv4MmDeL929Aa5/8AyiVER2hV10SQFtkm+12IXXw91Qk4DtfdCn9GVKB9m2q+QmGrGTHnUS/K95JJAyEWZbmPt99AYi9V8aw/UWWM91g33g1j+q8EsEgjlldiAosFuT01JpVyYVVRNCbxNYNpbY58Xl6m5sO2qxY0XHoMWeUQvnyQ49z4YxICQP5m7T7q6xuUwsqYw48vmuoudoawH9VrUgQtDvBn3bO0Jbcft6UewealCLi8TgBe9iSxJ/Mx0omGy1RmaITCAsBKyllXvUdbVFhx5Spvy5fMlbqqjai+wVS5vHkyIVysJ/8AlYZLKUNzb8S++qOZc+Tj+UMGUf8Ah5XjhkP+23Rlv3XqDkOQk4nkxKQXxMpQXQdjL4dy+21qiGdic9h/SZJEOcusTHRS/evv7RQLMyc5Iv7dlg/oNdA48SWFrA9xqGGbl8pM7h3+hbzjM0aBV+bxN0I7DS9JkSx5T+ZGY5UkdwG6CVgqoSf5etD0lkjO6Nih0N1JHTUVPHyWSg2SWniLGQxyjcpdht3HtvRcWBtIQW8yKO7RQ3tuv1llbsBpw4aSWXjoZJipZgbbBZdtztsPdQHE9PDLdZ3ZYsRtreSj+azadr9BemmNVRAiAKqgBVHQAUSq/I8djcjB5WQD4dUdfmU+yqXE8NFxjSsH815LAMRYhB2fbXXO8x/boQkVjky/IDqFH5iP2UA4TmVgzZpM2QkZAG6Q62ZTpe3ZQTc5wMyrPyPnB2JMkke3bYE/hN+ylwdaIcnyU+TNNGkztiM5MaMTa19NDQ8daitCutK4B1ItXS3ZgFFydABqSaDoVuimFwmaciE5WM647MPMPbtPfbUVb5H01kDKAwE3QyC+psIyOwk1R36QjfzsiXXYFVfYWJvV/P4eGWR83kco+Wv4VG1VUdFBNzV7iuPXAxFg6t1kYfiY9ai5Di35GdRPKVxYwCsSdWbtJNE9JmWcd5icWMxwjRQxLMfaarMKfm4zDxcSZceFVbyn8Vtznwn8R1pR+uldJ/IhihSSNEkVV7AbbgT0NzRdUTBMAWKMqggFiCACelzR7G9LZtlkOQkbEX8O4kX9otVB587JjaOWZnWUGVkOtzF4WHvAF6ZvT+TJNjtjSnc2OF2SDo8Ti6N91qFq5gwZGNBsyZ/qCuocrYge03N61k/UTRCbj51D20Bs8b+w91WmBVSwBYjWw6mhEuJFku+RxGV9Pl3/AFI72ViOx0PQ/CqyD8pnF5PK5XBCTAaSRsUYjv8AxBhQSXy/MPlEmP8ADu+a3ttRTl+Q5NlOFyMKLIpuHKWbT8rDSx9lC4YpJpFiiUvI5sqjqTWWncMDS3a4SNfnka+1SQbXIv1tpV+GNpFAgiYYgud23e73tdZPLZSRcaVB4NwiBHlxC1zaFmbqbk7g206a1bZUK6RX/mMUUn/VEwqjsfpDbFuiHUhRkIL+7xVc4/Fysx7+a6wqbO4eS/uUSKNapYmLLkZKQIAu46kxyKABqTq1qb4ceOFFhiG1EFgKI4MmLhQjcfLjGlyCde8kVTn9ScVEDtkMpHYik/ebVbykziP+HJEGHVZFJ+9T+6lvkON5zKcLJiR3Bv5kQVb+9r0HWf6qnmUx4ieSp0Mh1f4dgoXhJLJI+TuJdCNpudxkfQHwnf7bi9V8rGmxJjDMAHABIVg3X2rVzCEgihClgkjSNN+oqLtWygk/Mg7+/soq6qGJBHfc8IuzMdqx36lraJ97n2Ud4+GKbio0kXzUYMdrDaG8Rt4ewd1A5BdUVALfgIW0Y/8AgQnV2/mamHh7Px8ZBJA3DVt50Y9W7T31UKvM4WVHIZjhLjQ98ZLL8T0H2ChJGtqbPUuU8WTj44AeLaZZY2vte17BrdmlBElmhTdjxJDLGpcyAbmazK2m69iobs7Ki654lIGyQsk7Ys1wYJhbardze+mbl4pTgQvk+N4m/UliHiXulT3aEirOLDicpgQz5ECMZUBYFRo3RrHr1Fb5GFYuP8pAxVNioqtZ7A/gJ6sOwdvSiAQvIXhJTzpBukgfSDKB6SxN+FzVH6vNwpo8ldyTxfoyo5LGy/KGFgApHTXsvVx1j2pAy/UQPdliXwt7Xx2Pb+ZOw1QyyNroMgTxFR5TSMyunln5GT82ul6BiwfU2DkKBkH6aXtvqh9zfxotHLDOt43WRD+UhhXmxY9lGMOTgLIXkycaW3iZSCL+9daBhy+MkUmbCeRbatArAA/0l1a1Ulny3vHuyg4+ZQICR7DRPiRiSRM+LPNOvQtMWP2bgB9lc8vxiyxHKiRTPGLt4FYuo7NbftqgDmYOa+R53lyyh12Tb1iV9n8lmIv7aD5WI0FmU+ZE2glAIXeBdk17V7aMCJHXc8CbfzHHdh9sMjVWmgjFzHZgw2mGOCXoSLsnmXCtp1qKD0U41uZkjEWCzJEDYsNqKCet2NUciDyzuW/lsTtDfOtjosnc1ta1jxNPIIg6JfXdI21ftNA2QYkEEYl5fP8AOI6x+Z+nfuIBu1FcLKiyI/8AjRMmOmiOV2I39A6/dS5x8Xp/A/Wy8pMmcahEBZF92mvxo9iZGZnlZthxsLqgb/VkHZp+FaIA+o+IaCRs7HX9BzeRR+Bj2+40AllkkIMjFyBYFjc27ta9HdIp0ZDaSNrqw6g9hFec5KCOeRALBXYAewG1KsRVlaohx2BjZytGckQZV/Akg8Dr/V31BNi4XO4zCTFjlTcAd0ZBUg+4kGj2JN6nfaskUSjteXT7kP7qpYnF+pMHwY8kZj7FLgr8Aw0o1grzNx9Z5AXtCbi38KqFDmpZ5ORn+oIMitsO3RbLppehxNHPVGHJDyBnt+lkAEN2bgLMKERYmTOkkkMbOkQvIVF9o9tRUJra/MK0a2g8QoI+0++pYJXgmSaM2eNgyn2ioramuqBs4/1MMrIhxmx9jykLuDXG4+wjpRbL5fBwZkgyXKu43AgEgC9tbdK8/RmRg6Eqym4YaEGpZp5p3MsztJIerMbmrqPSI3SRQ6MGVtQRqCDXYHWlv0jlO8M2MxuIiGT2Br3H3UyjpeqjRA7de+kzl+L/ALamUy/6MzIIP6blyPha1MOZzmPjZIxEjkycj8SRC+2p45Is6IrLAyg/NFOlv+w1FKcu6BppFHjxZI8hR3rKoWQH42pk4XDGPFIy2MUjbsc9oiYbwp9xY1ZGBh+a83kqZHUI5Ot1FtLHTsq1aw00FVEczqkbMziMfnNrAnQddKWeY8Mo/uUJifpFn43Rh/Mp/jTJO0AUpOV8uTwEPaxv2a99LvIYvJ8WH+n/AOXxjdYJBvCr3EdbDvFCF3LnldvLfIbIjT5CS1vsfpU2HHCkRllba8hMcWgO2wuX+dSCOyq2TJDJLux4zEh/AW3WPsPdV8wImWMcq14FUWZLHUbju8pt17nrrWWksCPDEAv6iH8Qd47/AAkUpXXlQvcvjSsPzRrFJ98YWsExv4NQNNP1P+uLbIP8Qq5xWF9dkhmt5EWsz+Eg/wAu7argn21UE+CwIceE5SoytOAFDgKwQewE9aLLQJvUofkVxcSDzoSwTeCdx1sWUDsFHqqVUzIeNyNMkoHGm7eEcfEEGgWbxvHhSU5ZkXsR3EgH2MDRbkJuCclM/wAsv/MCr/ba9AcuP0sDujklv+WO5H/WKLAXIjSOYxxSiZdLSAFQb/1UYw4JJGR5NzRY6+XFdVIWx8X6jWj+bodaE5D44nD4YdEWxUyEM24a30FqIYs8SlZAgYSklN1ppEbQHwMVjW7XIJFQEpWhZWYBGT/ck3EQn2PM3jk/pSinBz70khbdcEOgYBLqRa6xjVF7r0GlkvIoVrzj5VQ/U5A/pC2ijqTjZxiZiPYAO2yc7g9t3/izN8zX/CtAX5vi2zYTLAoOVGjIgJtuVxYi/wCyhA4jPllYJCVMckZRpBtRlaMRzA/ZTUL1tqqK+Fiph4sWMhusS7QT29t6HeopQIYoTYh23MG0UgdLt1TU6N30YpWy8o5eZLJcmJdyKoG4bF0ZgvaR+Ne1dR0qCvvBDrL4kDAuZLqQ3Z5u3VH7pF0PbWsqNyyOU811KgSkqkyK3h/VuCjrro9bWJ1kXbcog3K0fjkjjP44j/uxd6npXGYhTHQqVeJmBjkjF4txI+S/+k/ep8JooG6FXKHqDt011GmlFOO/vFlXFxhIB8rPCh/62UftofkM31MjXO7eTc2Bvf8Al0+yjeFB6oYL5EzFLCxMqOoH2tRTHxi8tsvyDRAW8Mca+IH2m+37KI9lDONxuWibfn5iyi3+kqD72sDRK+lVkr8nhpg5hZY4BjzeJCxeFwfxKJI/31AZUb/TL/4OQFv+rWmTNx48/HaNZCGU3SSNhdXHtF/jS75Mu4xupZlO1vMxUnsfa8J/bUVTnjiF2kMSxtrMv1InlYaXZN2m/TSg88ZikKXB6EWIbRhcajS9M5xJNpAhWxGpXDVfvlcUByoJEx0Z9DEzRFGK7gPnWyLrbXrQcYOXHitvOOs81/AZCSq/4B1NMeNHyeaUm5fIMGKemMp2NJ3LtXWgHF4udNMXxGEW0WediFVAfaf3UwYU/F8fIEhduR5GTw7l8Wp/mOgFAxIqKiqi7UUAKoFrDutXnnKx+XyOSlrWlb7zevQ4/MMY8ywf8QXoPtpP9VYLQ5wyVH6eQOv866GlIg9P8RByf1AnLL5YXYynUFiew9elWMn0hnRknHkSZOwHwN9+n3116QyUjy5sZtDMoZPaUvp9hpuoFXAxPVOGyxxj9IfgkdWS323Hwpoh87yl84KJbeIJcrf2X1rusoIMvFgyoWhyEDxt1B7+8e2qnF8VDxomSNi6ysG8VrgAWsarepOXfAhSHHNsia53dSi9/voHwfPjCllGYWkjmsxk+Zgw9/W9AUm9J4jQuwkZZzuYNp5YJ1tt7vjSjazW7qtZnI5E887rI6xzOzeXuIFidLgG3SqgorntPvrdc9prqoOhW6O+m8BhnMcuAgCMlPMXS5IH4h3VDn8LknkpYMOBjFcFDayAEX+Y9l6ouej1bzshvw7VB9+tMnI5JxMCfIHzIl1950FVuI45ePxFh6yN4pGHaxrOfRpOHybdVCt8FYGqir6YiU4cmUfFPNI29z10o0KVPS3IiKdsGQ2WY7oz/OBqvxFNYojYrD0rYFYelAN5XLxIUEOfEzY0wt5gG5Q3c1tQe0UvZS5mEpyOJzTPidqq25kB/Mhvp7bUe5PLfFVlzMb6jAk0LpqV9jqf2g0qchi4a/8AI4/IEkR18pjtlT2WPzCpVilEPqMpd1h5jjebHb1udEF/sq9ixxyGSQAeJiyqv6hQdg23WUe8XqpgblyBNcqsd2Yh/LJAHyq+viNXcOB50SJELMzHahs3Xpe/Q/FaCXGwpc/KEcZWR+rMTqgHaWGx/tFM2XEuDw80cFzsjbViSSSLEkmpuL45MGDYCWkbWRySde4XJ0FWZI0kVo3G5GBVh3g1UAPSePEuNLkWBlZ9l+0KADb43pgFLq8Hy+DM/wDbMgeU/YxAOnTcCCD76Mcfi5sQaTNyDPM/4RpGg/lFhQrrNeFY7ywmYflVPMpfycyFb/T8OS3Y0kVh9gBpjyjlBD9MqPJ2CRio+4Ggs2F6oyCSciOFT+FGsB9ik/fQhYzjkNPvyIRAzDRAnli3sWuYMqSKOSHrDNbzY+m7b8uvXQ0azeJxML9XlsxsiYjwwR33t72YkgUBfaWZkXahJst72Hdeo0NwzqIo4WAEUo/R2jy45Avh1SP9Rzf8zAVtiLh/m26KxtsX2IV8C+5Nze2hmBOqO2PLrDPZWsAbG/hPQmwPYOtFk8+bcGv5sZKMW+YAaWtHdrewbRRDXiuZMeNze7KCb3HZ3HWqv1rf3w4V/B9OGA/nDX0+Fd8OGXj4g3VdwGgXQMbaKT+2grTO/q9dovtbyz/SE1NVB3k5/p8CaW9rLa9r23eG5A7NaWPLtYroRtt4ra/g8fY35H6MPCaN+oXKYsQ3mMmS4ZdbEAnVfxL3igkQKgqAAtiTEo32U/M0Q/3IW7V6jsorq9tezfqB+kRJ3of9qXvU+Fuyq8+SUkL7wxW5mZbRu+0+FZoH8JYNa9uorqaWN7osngCfqSAh9kVwCLt/qprop8S0LnmSXZDEojiSwvrZ2+XzGv0JFQV2YsxY2uxubaDXuolxvHxZG1hyEWNJf5DuVh8fCPvqCXAysJ1fIg3R9QdWicf1LRHE5DgDYZPH7GBvdCXH2MRRTHx2BLiqC2bJkg9jWKfAncfvq7HPFLLLjhvHEBvXoQHFxVXjcjj54r4SbUHUeWYx+y1VuRizcTOXk8KPzgU8vJhHzMoPhYe6qyF7Mn01yKMX83CyCQwHdfqR+Zb0S5vj0JGfCg36CRl3hiPwt+ky9KpZ8XK89JDEMRsTHjJJeXT5tCeg7OwUymNdnlkXS20g9otaxqKVfp5MkATq8gHRSmRJ9m51Wh+dizxLLF5LxRON8a+WgLGPViwUkqoUntolnYQ4/IKiMeQ5vE4AGnan+rHqKH5EOM8qMCwkkJRYhEDu3Ajsla51oA4J+W9lJ17vjR7i8rC49xHgxNn58g2+Z8qD2LfW3eaAEWazaWNj3+2j3F5riT6XhMQCVx455jve3eegUUU2YS5giL5jhpX12ILIg/KO0++ueQwIc/FbGm0B1Vh1Vh0IrrBgmghtPM2RM2rudFv3IvYKs2qoRZeC5jCyQ0EbSFDeOaLXUdD3j40bx253yvN5KQxxL1ihQNPJ7PD8tHiBWGoaBxeqMTzxBPBJjAnaGe2nZ4h1FGr0E9WrEeOVnA80SKIz26g7h9lXuGkaTi8Z2JZjGASfZpQKvqiQvy0gv8ioo+y/76Cmj/qvDkiz/qbfpTgWb+ZRYihfH8bkcjOYYLAqNzMxsAOlFU71sdaly8SbDyHx5haSM2Nuh9oqEdag57T76nxZjj5EU4UP5TBtp6Gx6VAOtdg1Q9cXzUPJFo443RkXc+61hc2sD21Dleo4MTOfFljJjSwaRTcg218NKWNlZGK5fHkaNiLEqbXFcu7OxdiWZjck6kk0R6PDIksayxMGjcXVh0INdyJG8EiSf6bqyvf8pFjS76PyWeOfFYkiOzoO7do1Fuddo+IySvVgF/zECqESQiGcmF9wjb9OQaX2nwtV3DyuazssJjzyvM3U7iAB3nsArvL4KfFwBm5LrGWICQ2JY37+6o+H5SfjZJGhhWVWAMtwd2xe4jpUDnxi8ikJj5Ao8i/LKhvuH8wsNa6l5DFhmEGQ3kOfkMmiuP5W6V1hZkObjJkwG6P2HqCOoPtFdZONBkxmLIRZIz2ML/EVUD8nHzFdpuMy02yavBMRJESfy9bXpT5Iyz5QhbFihydwU+QfC5PTTcV+ymSX0px7G8byRewEMPvFT4fp7jsVt4QyuQQWk10PXTpUxdLWJxeRlOMWAMIEYGeUrt/UGhU+Ig7dbU3YmFj4Mai6ggWMjWBP7PuqbwQRMQAqRqTYCwsBegCcFPykIzsnKImnG9U27lVT8o60Qyg1DmZmPhQmfIbag0HaST2AUvcZl5nEZw47PJMMlhGSbhbmysp/Ke2teppni5PFaUbsdArhD0Nm8dUMOFmDNjEyQyRxt8pkAG4d4AJqTKyoMSFpp22IvxJPcB2muYM7GnxzkwSK8QG4t+UAa3HZalR+Yjys18/JO6HF/wDo8a/zOflJ/aaKaUyQyI0y+U8vyRHxPb2gdvf3VxlY2ZkHZFlHHh7diDzD/jJ0+yguHnyx4y5bWn5PkXKQKeiIDYadijrTFEhRFVmLsB4mPae00QDyOP4Hix5uaWych9Qsh3u5/pFvvqpLiT8hH9RmoOO4qHxpCoCs3ttbqf8A2Uw5JwMMPmyoquer7bux7FHbQWfD5Pnp1eYHEwFN40f5iPzbe/30UtZCxzTythxMsCi4XViqAW3MaJY0i5ATcV8UY3AqpO9PCfAunTtK3q1z74fHYq8ThKAXs+Q34iBqoY9561U4bHkyUiRLvafYwubIki6ta1vw99QOPGx+VgwJoLICbAL83i6C3fW0wMRMt81YwMhxtZ9enu+FTHaiknRVFyT2AUCm9SEyRtAoXHAkkkZxdmiTwgju3toKqLnO2GKjMqvGJAHVjtFiD+MfIb9GpbzGhSQRlnWJLTPchJbX6KDdS/cyHUUwwZ/9z42RyvlTogdowdR+JWHsa1K3JS2C2B2yt5nlGyqUXRCVUC19elFVgZ86UQR2BYkxx32gvbU6/ia320R42LBy/wD03ko/p8pDthmA2Pf8j36+y9am4R58dOQ4u8kLjcYQf1I2HVR32PxohxuRhcyBh8nCPrY1ssh8LuB7dCGHdUFzA4jkeObZBlJNinrBMpA+Fr2//WlE0TFjCl4o4XkO0Cy6t3A21rvHgEESxB2cJoGc7mt7T21xm4seZjSY0hsJBYMOqsNVYe41UQPmyNNNgAiHMUb8a/ySr1HX3WYVvjuSiz42IUxTxHbNCeqN+8UuZOXLNiyQZb7OU4xt8Ux0LoCARftPbVeXlgmbDymM22aQWy4ewstg3+Fx99RcPDF9p2W3/h3dL+2qnH8iub5sbIYcjHbZNETex7CD2g1Blc7x+NjrMZA7yKGjhU3Y3Fxfuql6ZXInmy+UnFvqTtXuNjc29g6VQbysWLKhaKUeE9COoPeKU+WwZsYbZQW2ndEw+V9vZoVtTju0qOSKKZDHKgkjPVWFwaDzjNx2gnIK7VkAkTQqCrjcLBtbVe4/lM1IRiYskOGii7zNYM3tLHdc+4UZ5X0s2QyvhyAbRYrISSdSR49enSgU/CcpiNulxWZVN7qN6n/JUDRwuRjs5WKWbOmIHn5TAiNbahV3Wt8KM0tcfnc+6LBBgxwRjQOyNGi+216N4kGYg35mR50h/AihI193afjQWWYAXYhVHUnQVrcrLdCGHeDcfdUGfg4+fjmCcHadVYdVbvFJUr5/B5zwxSlWXtHyup6EqaC56rzxPlriRm6Y99x75G6/ZTRgQ+RhwQ9NiKD77a0kcPiNyHJxxubru8yUk6kKbn7af7UKiyceDJiaGdBJG3VTQ/D4PDwMo5OPuBZSuxjcWOunb2Vrn+XbjYFEQvPNcIT0UDq1LHG8vJFykeVmyvIpursxJsGFr29lA0clwmFyLeZMGWYLtEiHsHTToaR8qA42VJjlgxiYruHQ27aPc36il87yuOyP0dg3uoHzH8rH2Ut3Ja51J6mlVyOtdCuR1roUHQrdW+O46XMyoYGVo0lOshU2sBfQ9Oyr2b6eyI89cTDDTK6hw7CwUXsdzdKC36NVjkZL/hEagn2k6fspraNJV2SKGW4Nj0uDcVS4fjU43EWEENIx3SuO1j+4UQSqlDef45+QwDHH/rRnfGOlyNLfZSqcaeGaaFEZMiECWHw6nQeYnTUWP3U+mqnI5H0uJJPa+2wPsDMFJ++oKfAQGDEJdPIedvMMB/AbAGw6gHrailI4y5MQuVkJnhGQocm7BndE3X77U4cbkNlYMGQ4s0iBm9/bVSpzWjpWpJo42jV22mRtie1jqB91cZEqQRPNIbJGpZvcKI6IB0IuDoRQ7NzIuEwEVAZDcpCjH/Fqe5aEN6hzjIJhZYhEXMVr3LsViW/XuqzyMq8jx8eWih5cKQGeAajs3r7qKgbMysgwz8vgl8fcDFNGrIy7jp26j30Z5vihyOKVXSeLxRH29qn31kHMQZeLPNio5aFC+1lsNwFwu7oah9Owl8Y8hK5lyconexOgAPS1FJciywu0bAxuDtdTofcaivTf6n405ORhmFf1Zm8ljbv1BPu1oD/bEMvI7TeLCVtp7Sd21agh4zKXFz4MhwWWNtQOtjcaX99M0vP531EkcGNCyRGzFpl/bcChGP6fMnGLyMkhUEhiqru2xA2Z/ae21Qq7TZk00Z3C9h5caHco0BMB9ndQOeBmrmRbyojkHzJuV7e0FCdKnmaRYnaNd8gUlF727BS96dKHMYxvAzbCJAiNDKNR1T5TrTIaqE7P4hsXEm5Dk5PMypWskanTe/azewdgoj6d42bAwZs91vPIhMUJuLKBuF/a1EJeOfNzlly7fS4x/Qh6727ZH/cKJeyhoHl8zh5/D5ZxntMIjuibwuAevv8AhSm+YHVVdfCFjjIB6pHckfE61Y5vjpOPzXjOsbkvE3YVJ/d0qhDL5M6SlFk2MG2OLq1uw1FNvpPHl8qfNmGuQQEv2qt7n3a2oRyuIE5z6fIJTHd1CMottibRdt+6mLiuews7bCoMM9rCEjTT8pGlq16g4k5+OJIR/wAmG5QD8Snqv8KChiQ5np7JZZQZuOmOsiAnYexio6e2jhxcDLMeUY0kYWeOZdG9h3LY1Dwub9Zgozn9eL9OdToQy6aj29avKqqtkUKOtgLDWqipynKY/GwebL4ne4jjHVj+4UvTeqOTWZSyRwRkg7GUswXvOoP7Kv8APK65Uco2J+mFSeTxFDc3EUf4nNAszHVIpQbhksZWkN33N8ocj8bfl/COutFV+XyZMrkJZpE8tmt4SCNAAAbNrqNapUwpwpn4WXMniKZQQNESzFmVBqzBj+IUMTEQYOPnAbicgxyKehA2sv76gsen+Kj5LIfzWtFCAzoPme50HsHfTV/deMxZThO4x2hsqoylVtbTaelqpcHhDF5fkkQWjUpsHsclwKn53g05FRNEwTKQbVJ+Vl7moOOU9Q4mFHaBlyJ2HhVTdV9rEUAbl8t3eeLMl89QrgMVWO1v1ECdDr8vsoVKjRSNG1tyEqbG4uNNDVniuPbkc1MYEqpu0jD8KjrQPnH5DZOFBkOLNIgZh7TU/wB1aiiSKNYkFkQBVHcALCtu6xo0jmyoCzH2DWqjBXQv0pcxH5LnmkmadsTAUlUWLRm9m79tEMSGfjsiPFeZsjGyLiJpDd45FG7bfuIFQZzfIzYWP/x1vM3R20RB+Yk6X7hSXlTZWblL58nmyttRWIsLE6dg01p05bjfrNkqFTPECIlkJ8sEn5ivaw7KoYPp6RJ4JMplbyWMjW1MkpPViewWFqKDJh5XD8vjiUXIkUo69HUnabfbTz21XyMSDJMRmXcYXEiHuZasCqEv1bMz8mIz8scagf4vEaA0x+rsSRMtMsC8cqhCe5l7PiKB4uFk5khixozI4FyBoAO8k1FVzWh1qXIgmx5WhmQpIujKaiHWoMHU1Ljukc8cki70VgWXvAPSo7WJrYqh+xOb43MdIYZf1X+WMqR0F7d1Ty5+JjzLDPKscji6htLi9uvSvP4ZZIJUlibbIhDK3cRU+bnZGdN52Q257AaCwAHcKqPRF6VInbQX01ltk8ciubtCTHf2DVfuNGloityOb9BjjJZDJGGAk29VB03fbQfkfUXGT4M0K75HlQqF2kantJPdTBNFHNE0Uqh0cWZT0INJHqHj8Tj8iNMVj41LOjHdt1019tCBuOsU2VHHkSmKN2tJLa9h316JirCsEaQFTEigJtII2gadKUeI9ODPxRlSzGNWJCqqgkgG17mmnj+MxcCAxY4sSPFIdWY+2kWhfKyHKhy+PdguZAwmxx08yMeNdvtAuKGR+oo8jj5MLkg7kgASx23uoIO1t3b7ai5zKlaVVyQY+RxG2eYgsJI/mV/YR++gpJJJPU9agJyQOsZysWQS4kWwNNaxjcrZV2nqVH30c9MY0kaSTeUYYXACF775e3e3sHupd4nLhxctXyYxLAdHUi9u5gO8U+QyxTxiWBxJG3Rl1FqsSu3McULMQFjUFmAFha2tBU4Tk8WV143MEOLIb7WuSoPssR8aMZcZmxZoh1eNlHxFQ8blrmYEM4+baEkHc6jawoR3BirFFEjMZXjO7zH1Zna+5vvoJFguP75Ey6yap7QwaRaO5Mwx8aWci/lozW/pF6CYnNOnAy50lmyEcxrf8TE7lv7g1CDeHCIcSGC2kaKpHuGtB830pBLN5uHL9MSblLblB71sQRVzN5T6aDDdLbsp4116bWsWP2GrT5ipyEWERrKjuG9qEaftoNcdxow0u8hnnIs0zABiPy99vfVu2tUOQ5FsbIxMSKxlyZQDfsjB8RqVc+OTkZMKPVoY98h9rEAL9lBbArdU4c9MjMlxohuTHUebJ2b2OiD99TwZEWQhkhbegYruHQlTY2+NAv8ArOImHGmHRWZT/iAI/ZVL07wmLnY8uRloWAfbGASvQXbp76O+o4RkcPMU8Wy0gI1+U61H6cKLwsLEhRdgSdBfeRRfFvB4vBwbnGiCMwsWuS1veauVVlzEhy48aUbROD5T9hcdUPtt0qji8m6czlcdktozB8Yn2gEp/CiCYWIMZlCgkeJxbUDvNSXBUEG4PQjupews2RE5TAlN5MfzZIh/I1zYe4m/xqPG5WRfT0M6/PhyxxyDvVSP2qaGGCeKGcCGTRyCUYaOvYSjdh1obFgcZCkojTzWwQx2yajeV37z3k99QcpySQ8jxeSjXhkVrnvSTatD1zmjzObRj86SFde1DsH3NRTLi5CZeJDOLFZkDMOzUWYfbQ3E4hH41IALL9UZhfsVHI/7orXpSXzOM2H/AGnZbew+L99Gxa1EcxwRpNJMo/Ul27z/AEiwqDlZzjYGRMPmRDt950H7atihXqcsOIl29rJu926gXON4CXkMGbJDbX6Y47HK/Nf9lTemsqDj8yaDMHkvIAu99NpU6q3dejHpaZJOKWMHxROysPedw/bRGTAwp5RNNBHJKPxsoJqKsKyuoZCGUjQjUEVHkxRS48kU2kTqQ+tvD261IBYWGgGgAoBl+oMGczYGVHNBE14zKPm666dRVRqLkMlI1x+BwjPixXBle9mbq1jdb1d4vlIuRkKTQmDMxr7o27N3hJW9XsMYy40S4tvpwo8vb021Ux8N25afkiDGpTyUQixfba8h9mmlRQPmORkyZWVGPlnxYw/JPjuQw/xD91W/TvLNkTS4kjbhbzYCTchT80f+Hsqh6k4mTFdsyJx9PK+4xk2KyN12jtqnwGdh4GW8+VuuU2xso3AX+a9A9EDrWdtBIeeHIchBh4IYRElpZWFiVUX2qOz30bvVRHlY0OVC0Ey743FiKHcVwq8XJOUfzEl27CRZgBfQ9nbVrk+Ri47FbIkG432onTcx6CgXDc/Llci4zpQiyLaFPlRWv0+I76irfM+nzyWQMhJhEwQJtK3va+twaTsiCTGyHglFnjYqw91MPLeo8mDPljwpFaFQFO4BhvHzFaXJJXlkaWRizudzMepJpSOb61sVz210L30oroV1R701xWHmQ5EmUm9kYIqkkbQRe+lRS+ms45rwQLeAHwzPou06695FEFPSKEYUrno0ht8ABR9pooiokYJvNlLGwJ7rmq3G4EeBipjR67dWbtZj1NWpIopozHMiyI3VWFwaqI83PxsKAyzuFAGi38THuUUnRYmXz3IPPtKRM36kn4UUdFHebUWzk4TFkm8vF8+fFUO8TMwXaxtcbr3tU+FzmJ5aiSMY0PlrIpXVbM2wiwAtZqApj48eNBHBCu2OMbVFTjpXCkEXBuDqD7K1OhlgkiU7WdGUN3Ei16BL5rIPLcqVw49+39NNouz7fxH2VVyuGysKVFzB5UTkAzqN6Lf3d1HvS8CY0uVFMAuYrBNh+bYO0ewmmFo0kUpIoZW0ZWFwaYulbD4fMgAvj4/JYb9CrANY9qubEe6j3H4WPjIzQ47Ypc+OMtuHvFmIrePxWNiStJis8IY3aJWvGf8AC16uUS1Smy/I5DHgY2TIV1H9a2K0L43IXjeZyeNm8MOQ/mQE9Azdnx6VZ9TQu2AuTESJMVxICOwdKo8rCvLcXFyWOP14lu4Xrp8w+HWlIK8623iMo/yW+0gUinJk+m+l/wBrf5tv5rbaJy+oZ8njJMHKG92A2TDQ6EHxjt6daCk61Fg1n5f1HC8e4a8mOzxP3gqAV/6bVLn82subx2YmrQIrSgfmY+NfsoCGNrX062rL0BnL5pZOa/uCDfHDpAp06KQt/ib1XxuWnxxlyKxOTlgL5v5ddzH391DhVn6DMALNGUC7r7yF1QAsNT3GgIwcgMfhhh4zf8zMlPmEHVV0UAnvaicmerGHg8BxHHGu3LyQbBUQXl2t9tzSzNizwfOulyAwIINgDoR7DUQdlvYkXFjbtHdVD3xmfByTZGHjxbcGCMRq5/FuuvT3VDw2KH4rK4yU6xyyRN3i+qn99a9HIF4x5O15Tc/0gCiq4ghy5cmM2GQB5qfzroGHw60QpZXJTPiycdyBIysVgYJ+3dH+FveOhqll8m0uZBnLpkIqGQnoZE0v8RRH1fAsebHOosZ08X9SG37LUvE1FE5eY/8AU586FLLOhRkb+ZNp6e2qcWZPFjS4qN+jPtMgt2rqLVxDCZNSQkY1LtoLC1wvedelXZsPFhS8ayZAYNsluESzXEb26/ha4NBVnzJZ44I36Y6bEI7r7tagZmJLMbk9Se2j3HcCmeju8UmMvRHLBl0sCQCLnofZVmYcDwZWMxHLyCoYFgG0PQ3PhHwoBfF8ryWHC0GFGGDtuLbC7Xta1EU5j1Mh3Njll62MJ/8AdqGX1dl2240EcK9n4j+4VCvqnlwb+Ynu2CgLxeq2j0zMN4z2lb/scCrpzuO5rEkxYZdrzIR5bCzi2twO23soRD6wybbcmBJFPW2n3Nepxlem+SI3x/SZB+V1/TIbv3L4aooYM2V6f5Ex5SnyJLLIR8rDsdfdThDNFPGssLiSN9VZTcGoYcdjjCHKZcpRoHZfnXsLA3F64g4vExp/Oxt0N9WiRiI2PtTpRF0e2q3KRY0mBOuTYRBCSx/CQNCPberDIksbRvqrgq3ZoaCZnDkR3zc+afDQ3XH/ABOexL31NCJvTSyLxEO++pdkv+UnSiU8KzwvCxYK4sSpKsPaCKX4ufklwMqTFjWA4mwxREbh5fy61e4rmky/KimASeZDIgHyttJUjXt0vRQXlfT/ACoO5ZGzI0+QFiXA/pb91L7oyOUcFWU2YEag+6vTjQD1DwQy1OXjLbJX51H+4B++oas8DxWJhQDIifz3nUHzrW8J7FHZRU0p+m+YGK39vyjtiYnymbTYx6qe4GmiaeGCFp5nCRILlj0oFb1hkM2XDj67Y03ey7n+ApbNM3qqPz4sTkYwRHKm03Gov4lvSyRrQjRrF+YVtkZTZgVPWxFq5HWorLan30S4LKxcXkUlygPLsQHIvsY9God2n31uqPSMfIxcgM+M6SWIDlCD7QDUyOpJW4LLbcL6i/S9IfFc1kcYsiRIsiyEEhr6Ee6uBymaM1s1JCszm7W0BH5SO6iY9CHW9cZLrHjyO7FEVSS41Ki3WuMPJTKxoslekqhrd3ePgamZQ6MjC6sCCD2g6VWSfIZY3SCUiWeFScWW91yYG+aIn3dPsqmxRIgoN4RuVW7fJm1F/ajjWrfLcVk4HgW8nHltyP1MJPU6aj9h99U5ZeNxpJAl85g6tHI11jZbDerqLXvUaMHpPLeXCkx3N2xnsvb4H1t9oNFs3kcbBQNM3jb5Il1dz3KKTML1Bk4aSCNE3MqpGbWCKpY9B83zdtFuKhWNG5zl3PmHWLzOoHYwXvPYKpRp8OHLjilzYE8+wJtfcv8AKGFjpViKNI9EFh7ST+29DuM5GXk5ZJwpjxE8ESn5nbqzE+yiakXI7R1qokrR61gNZ1ojiaFJonhcXSRSrD2GknCzZ+Ez5ceYFoQ2yZO8djL8KegKXfVHENkR/XQLeWMWlUdWQdvvWpVgTzHDAL/cOO/Vw5PEVTXZfuHd+ygRohx3MZnHMfJO6I6tE2qn+FGGTgM+U7imJlsLG2sZLC+5ei3F/ZUUDg45mh86eRYEdGaDdqZGQ2KgDUfGrMWPgl2CRySACMq0pC2It5isq9Qb99E29N5LymYzrkM3+6xIN+lza9Sf/j+WuvmR9veO2/dTDQ7HhMs5hbbDjlJPDGLEqUE4Vm6kAkVJk4kFsuVQWdkkCliW1WSOIEX7TrV88PmBdy7SQoW6nrdI42/7hqu2Fm45CvGxjO1Sw8Qs2R5huR/KBeqMyMWPIniszxgt9KSDttjwRAyi3tNDczG8w+FNuSiKzog8LBhuXaqroVTVr0QgYySQhjrJC5H9eVMVJ/y1ubHfLhLxfNJK0wUG28M4x4UJHYQG+FAQ9GyhuPlivrHKTb2MB/Cj73YED7aUPTsxw+T8si2PmXRSAQokTXYpbrt6U4dlqIVPWbjzMWPtCuT8SB+6lyGDzTd28qLUGUqWUNa4Xw9polzUsnI8zIkILkN5UajqdnW331LhY4eQJAxEAbbjvchZMqK0imRGvbcPDUVmDDqfNURwZMQCxqSUCzfpFxuv4hIq3opxeEJccZOV4MRVuqHtsBfp2bt3vvUOJjLmZK46i2MN0wHdDN88XsKyrU/M5DZEowoB+hDYyEK5UsOg3Q6jbVFLneQkyYSsEm3GFxaMizAdN+25HuIFA8z50sCv6aeE7hbTs3k6fdVnk02hRu3OdANyy/YxCyD/ABCqueAuQUAK7FVSp3AghQDo+o1qCAWp84WDi5sGKbHx41DDxXAZgw6glrmkzDVEdJ8mAy4ZbY5FwNe5h2jrTZw2HPxuSY428/j8kb4pB1RrXG73jtoUYbDxHXa0MZU9hUW/ZQzM9LcbkXaIHHf+TVf8pouwLKQCVJ6Eda00scbJGzAO+iA/M1hc1ULSw85wWq/8zBXUga7R7vmX9lHsDOxs+ATwNcdGU/MrdzVZqieLSPOXNxW8lm0yIwPBKvu7G9tBeFCPUiGXHiiV/LkZ7wt0UyKLqpPYT2HvouKhzsSHNx3x5xdG+0HsIoEgTbJ2yGGxzeLPgtY2bws4X7yOw1D5zY5xXjcGTHZgGXtAbep+INEOSw/oCs3IH6iSNwuOCtlnjHUSONbj20L/ALi6EGCKOGxfVVuSsnVCT1AHSor0GSWOOMyyMEjA3MzaAUMxuSm5TOCYfgwsdg00x6yHsRe4Glds3kOXyY8eWUkO2i/LGg7Tb2CjB5jH4+FOM4dfqJ77fNtoznqR+Y/dQXeU4HCz528t/Jy9u5touCDoCwqrhel5A6/W5AliiOkKEkXHfu6Vb848TiBZG+o5TLN7dS8h0H+FaJYcBx4Fjdt8hu0r/mdtWP21RvIxsfJgOPMgeFhbb2C3S3dal+P0p5GfFMsokxkcMyOLNYagdxo7m5kGFA087bUX7SewAUAHq9GyUUwFMcmzuTdwO+w0qC3z/DTcm0LQlEdAwZnvcg2sNAaT8vEmw8l8eYASJ1sbjXUEU2c3zqwY0L8fOjSSMTdbNZLdoPtpRnnlyZmmmYvI5uzHtpSIxW60K3RWxXQq3xvGzZuZHjlWjVtXYgiyDqReiOd6ZyY8lY8K8sLj52IGw9u6iDXpt2bh47C7IXVQdL2JNQ5fqDkMUkS8eUA0DFiV/wAwFqJYGKmFiR4ya+WNT+ZurH7aqZnLZ2PuVOOkdOxmNwfgm6qgFl+qORnRo08uJWFjtW5sfa16Bmi/IZPIcjtRsQIFJKiOIg/ba9CpYpInMcqlHXRlYWIqK3BKsUySsgkCEEo3RrdhotAvI+ocr9V9sMfzt0jjX2DvoLVlMvKbHXDVj5Ia4jUW3Me+2ppAyZXMw4cacbwo3voglGo3E/h/Mx76ISTjguL35DedlyEs1zffK3X/AArVf07wX0gGblr/AMk/6SH/AGx3n+b9lU+Qf+6epIsQn9GFtlv6fG/22tVQyYZnbEibJN5mUNJYWF21tb2VZUVyKoc3yr8birLEgeR22ruvtGlze1VFrLyZMdQY8eTIY/hjtp7yTSzzWdz8kLs8LYeJ0NiAxv2Fr3PwppjmWSBJyCFZBJbtAI3WpZz+O5XlpWysorh4iXMaym2xO8qO331KsKpFEIg+QUnjJeZbJIhO+Rtqkl0UAWAUd9V8yPFil2Y0rTKB4pCu0E/yjrb31ACVNwSD3jSoo8HiOMrrJ5UY+Vx4muPwQoLb2726Ds11rBjs0YIjIEmiQlmJJ75GHjkb+VNB20NTKSaRXl2pOuiy28BOirvUdFUdwq9BnTJIsWVtQTKC2Q7HayHUX2a7bdEFvbVE6xzIC3nMjILHyyF8sd17iKL72q3i8tlKl2vkoul1Bso/M2TJtU/ZXMbQT2aOPzFjAIlnAIUf+XAu2NB7WNQZcWRktuCNKo6OQ01v6R4IV+FEEpsXF5SI5PHuv1CXAZTYFlVgqv3W3VTxGMDCEizQkIo//wBeP/8AyyVUx5s/AmE6XGlmWaSKOMr3bFNGspIcuOPk8dgwTb5oVgVCIwkfp2+G1AGy8cYzmOKwaWVmxiqF5fMg2qAtjpve96aXyiMA5nQCEykdt9t6AtFHl4MEktxNHE8t1JDBipl0I11Z1okG8/0+wjTaTCyeWLnawupXXXSgW8PDd/LQv5c2eCDIQroqPqpv1V2ZautCkOKUiHlrkLbaP9nNxhfT+vbU2JjKIyCf05bQRuG3KAfHjyqbL/uKftqXEjfPytzraKURzz202ZOO3lsP8VqCdZBx3FPmPtjycmzBXIUCSQX237r3ahEKSMRK0Zl7TIAs3/8AJjFZB8QavcllyZef5ECSSRweH9GSO5b8X6bg3t0qvmRiCFpZIbMo/wB7GMTf/u4xt9tFVczIizNmMhlM5ddqFlljax1F5Nsi6dhoPllGyZWj+QuduhXS/cSbfbViXIdYtzOXyJgVbf4ikZ/Cd4vc9QQaqxKjTRrIbRlgHI7FJ1NQGuLWTBKGcCfis8BHb8AY6Xb8pU6U1YGG2FEccPvhU/o7vmVT+Entt2VQ4XF+hefi5SJY9J4WI0dG8LC3sIo0Olh0qxKzcqqXY2VRcn2ChXE/83In5V9RITFjA/hiQ6/5jUvPymHh8hl6sAg/xG1dcIipxOIF6GME+86mgvCt2rKyqitmNyCIDgxxyP2iQkfZagGdyXqcAqccwj80Sb/vu1MmR9QIyccIZOwSEgf9NA8pfVclxH5Uan/wiL/a+tRYVcx8t335fmFz2y7r/DdVWjmZwfKkHIzpkAHWSWQn9xoIRr3+2orVyKM4GXhcZCs0I+p5KUeHTwQ7uz2tQa1MvpTjI5AeQks7IxWJOwMPxH266UBPh+MnEh5HkSXzJB4Q3+2D+/8AZRisFbqoVvWM53Y8HZZpD7/lFKxNNnrDGLRQZQ/ATG3+LxA/dSvDi5GSzLjxtIyjcwUXsB21KsRXrQ610yspKsLMNCDoRXI61FdVNh5BxcqLIChzE27a3Q1BW6oe+L5vG5JxFGrJMFLFG1Fh18VS5fKYeFOkOQ+15NdBfaO9qR8PLyMOYT477JBcX66HsINZk5U+TK007l5G6saupj0SNldd6MGVtQRqCPZUWXmS4qgx4suRp1jtYe/W/wB1L/pPPcu2C5JWxeL2W+YU1DrVQsZfP8xMTFjYrQE6X2s0mvdpYfZQ6P05y+QHmlTyzqxMreJj95+2noVprHTsNTDXlxFjamz0jgYxxmznTdPvZEY6hQAPlHfrSvOoWZ1HQMQPgadvSybeIiuLbmdtffapFouBrc0q8Wn/AP1ExbqrzH9o/fTXbSlNmGL6uv0V5LH/AOav8TVqQVzOSfi+RY5Id8LJVShGvluuhAB76oZGWfUGbBiY8bLiRNvldutu29ummgpleKOVSkih0PVWFwftrI4YoV2xIqL3KAB91B3YdmgGgFDuV46bkfLhabycRfFNb5nPYO6wolXLxpKhjkUMjaMp6Ee2qhPzcb65hgcNij6WJhvyLfO40uZD2UK5HAGDkDGEqzSADfsGisfw+2nvOiyDi/T4IEbvZFceFY17W09ndQjJ46LhsTzMSM5PITHy1lYbmBYEllHZUUn2sangyWiGxlWWPUiOS5QORt32FtbUXxPSnIT2fIZcdTqdx3P9g/jV5vRsOw7Mlt/YSo239wNF0Kjz3dhJGziJdWx12kxgWUeVv0ufYNKJQZXH5UXmeTHa9i2ZMXYn2INxNDsjgeXwH86NS2zUSwm5Htt1reHNMwb6JPLlUgzQpZXkGi2iaxe/a2tAQmgCJ5iJHAg6SLCkK/B59zfYtScZnNHP5beZkQy+FyFeRV7L72CLbvstZhiPI8UUimWwZ1gjaaYX/NLPe1c8hHjRqoyCBIei5UzzP8IoTaiLOVA2HmJ5YvDM8aoR0G+RLqPcsYqEZQX05LISRvmdTrY+OW7fdXUOesOKFzo2GNGA0ErIsTBl+QRxFix9/wC6g+Tn40nD42FBcOsjNMG79bG/TW9BeaVtkuDj3086GBRqd0brPDb4E2onMx43BcRgfV5LGR11YB3+c+DWw6VVU4fDxiWVlnzZACG18tWC7L7gDb9tU2kyMtzlzozr2SQ7MhEt3AbXX7aDiBI2a8iBwutwRkKPaVbbMvwreRnRMv6TyRQoWEiGR2x5woB8pCfEC1+lcz5IdN42S44uDNKGZSwF9ilx5ivbp4rV3gcDNnsrMGx8BTcFriSXU+LbcgG2l6Kq8TxUnMZUkspaPGT5mGp/ljUt3CjPI+lcN8UnCUxzxi4uSRJbsN+2jmPjw40KwwIEjTRVFS0TQ/iSuRx+JOw/VSPaD2gjwN+yr9cxxRxKVjG1blrDvY7j95roHtqoF+p0LcNLb8LIT7t1Z6bn87iIR2xboz/hOn3Grufj/VYM+OOsiMF/q6j76WfSmd5OU+DJos+qX7JF7PiKi+G+xrm99O2ulOlRPPAkixs6iRzZUv4if6etVEnYe+g2c3qO7DFEG3oNnz27/wBTSic+Xj4oU5DiMSNtUt03d1+ypLK2vW/Q1FJsvCc/nS3yrkj8Ujiw9wW9Wsb0dqDlZGnasQ/95v4U0WFYNDQ0h+oONj4/MWOEEQugZLm5uNGox6Ob/hZC90oP2r/2VW9ZkHJxl7RGxt72q16OW2HkN3yAfYv/AG1F8MQFZWCs1v7KqIcnHiyYXgmUPG4sQaH8Vw0XFvMUfzPNI2kizKo/CT20QyMiLGhaedtkaC7MaXYvViNnN5ybcMjahAuym/zN76CzyfpmLOyXylmMTSAXXaCLgWv1HWlHMxJMPKkxpbF4zYkdD2gijXJ+oplznfjpj5BUA3F1LdrAN0oDNNLPM0srF5HN2Y9SazVjkVutCt1VbFbNXuJ4qTk5XjSQRiNdxJF+pt2Vxk8ZlY2X9GyF5T8gTXeD0Iogj6SgZ+RMtvDChJPtbwinNfZQzg+MPG4e2SxnkO6S3Z3L8KJg2NWJVLO5P6CUfUQscZrWnTxWbuZeyhnKep8X6ZkwSzzONu8gqEB6nXto9LHHKhjkUOjCzKdQaWc/ieAhyCr5ZgN9Yl8e37jb40IX8TFmzclMeEXeQ2v3DtJ91eiYeOmLjx46fLEoUfDt+NVOL43jsOISYdpPMGs9wxYe8dlEAaQtbNJ3qgPBy6zr1KI6n2rp+6nEm1L3qrHjyGxVjdFydxTazBfCw3XN+g0pSCrcrixYKZ0r2jkUMoGpYkfKo76XZvUfK5uQsWHaHe22NFALG/S7NQf9R4WSSawxtI4jc33N4tttKMelYE8yfOk+XHWynuJF2P2CimrFSaPHSOeUyzW8chsLn2WoRh+oiM1sDPAV1cxrMugLA2G4dl644bmczkeRlWwGIqkhbarrZfF7aW+TmWXkMiVDdWkYqfZfrRMeik3qhlcxxuK/lyzAyDqiAuR79vSueMyZsriIpQf1miIufzrdb/aKr+nMRIcEyPHtyWdxMzDxXU2trQXcPk8DNJTGlDuBcoQQ1vcag5jlP7dCgjTzMiYlYk7NO0/bXeXxcUrjKxlEObGd0coFr2/C4HUGoJ8Zs3NwMyxCQFhLG3VGGov/AIhQUPqPU+KpzMiMPAPE8XhBVfcuoogMLi+XgTLEe1pBcSp4JAehBK9oohkSJHCzSK0iWsyopc2OnyihWFy3BYWOuNDOVRLnxq265Nz+Ggw+nnLAfUsUPzNqkpAXail0Nto91Ucvj8vjIfMPIRwx9ARGPNY+wgbiaIt6m44lkgYu4VmBbwJ4Re12t1pcb63nco5EzCKFdGlbSKJfyi/bRVFMkDIM06/VDXSUnU9hYg3oniz5pwo1GCGx4p/OaS1gbm+2zadDYVajwcLGQPiR7x0+tyBuBbugh/GfhVgBzwcos7NJOQ2/a8h1HVel9PloKaycWMjavn8RM3VGAaE371bs+6iI9Pea6ztJEGWxV4EKCQXv41VrdPy2oT5brCBKonwibAEkop/kkbxRN/K+lX+GzGwpxglzNiOpdCwtJj21IkHYvt6doogni8DhQMskl8h0sEMnyqB02p009tVc7M5LJ5BuO4wiMQgGedgNCezW9G1cMoINwdQR0NU8fFaDPyZlAMeVtYm+qugsR7jQBsbkOW4/lUwuSk82KY7Vc2t4tFZSPb1FFeXzZ+PSPLRfMgVts8fbZujA+w1FzfEycicd4HWOSFjq1/lNj2e0Vb5LJxsfClkywHittKH8ZP4fjQCJPV+EFvHDIz9ittUfbc1Q/wDyPksuSyTx4pZlRE2+Gx6sXYHpQKRgXZlXYpJIUG9h3a1Px+BlZ84ixh4h4mcmyqO8mop14PkpM/GczW8+BtkhGgPc1vbS56kw2wOTGTCdqznzUI02uD4vv1pk43Bj4rGkM0295G8yeZztF/jQbn+W4zN8vE8TqkgZp1sNo6Hbu61RXzPVWVPipDAPJkZf1pAdb/ydwq56Wx1SOblMhgN10V3PRRq7En26UHlw5BgSxsds2I/meXYeKGSw3qwHiF/bRnPxph6axYcZS4tG0iqLkhhu6D+Y0Fn1FJDk8K80LrJGHSzKbi4O399CvTnNSw5CYU7loJPDGTrsbst7DW8+M8d6fiwpv/qMmTzSl/lA/wD0KDRwTxz45YFDKVeJjpcFrBqg9AmzsbHfZkSCK/ys+in2Bul6r5XOcZjRFzMsrfhSMhmP2dKtusUyFZFWSNuoIDKaoSenuIkbd5G32IzKPsvVQpZUuXzPIFlTdLIbIg6Ko6D3CmiJsT0/xsccz7mNyQvzO562Hsq/i4OJhrtxoljHaR1PvJ1oPyWPHleo8SCbWMR7ip6GxZrfG1RVjF9RQSuq5EMmMkhAilcXRr+21GTUM+PDkwNBMu6Nha3d3Ed1qkUFUCkk7QBuPU2qoXPWGQVigxgbBiXYf06D9tKJ605erMB5oEy4xcwXDj+Q9vwNJ+0lrAXJ6AVKscGtdtSz480DbJo2jfrZgQbfGou2orATU2M0a5ETTaxB1L6X8N9dKhFdVR6FgZODkIWw2RlWwbYNtr9LiwqwZIPOCFlE1rhbjfb9tIvE8vNxjuVUSRyW3oTbUdCDUedny5uU2U/hY22gfhA6AU1MehselbFAPTPJS5cMmPkMXkhsVc6kqe/3UwJqKsSq/ITtj4U86/NGjMvvtpQb0zgQyQyZ2QolkkYqu4brAfMde0mmCRBIjIw3KwswPaDQXB43kOMzduM6ycfI13Rj4l/7aAlhYK4SzIhHkvIZI0H4AwF1+2rAOtQ5eZBiR+ZO1gTtVRqzMeiqO00Px/UGPJkRwyQyQiVikbvaxdTYqQDca0Rvn+WOBAI4j/ypR4P5F7X/AIUnFkkErzyN5psUuN24k67ifZXoE6wR+ZlNFvkC6lV3OQvYKXX9VQlykuCpS9rEjdb2grSrFOLIUxK8wDuUMMrJqJ4SOt//ABI+tjqaMemIozx08JIa8rBv5lKrY/EVHl8fj5GMM3BUYzvHvKONqMLXG4dFYdhoOxx4Y8SfBndc465HUBD10FrWqKYc7Ig43H+g4+IHKmUhI4+qgj53P8aU544IozGW35IYXZCDGFtqt+0+0aVfaVWBW6ymQ3kDTeWXPe/Rm/zW9lcSy5qtEkGHFCwJWMxJvLXBFtxLbtKAvxHPcZj4GPjSyMkka2e6m17knUXo7j5cGTGZMeRZR/Kb/b3UgYnHZuZvONEZPLNnsQCCfea7MXIcdKJCsmNKOjWK/f0NUGsbFE+LNzGblywOZCN0RP6dm2+Ie+j2DDkRxgzyrM7AfqKLBx2OR320pJwiuTP9NmZTQY0r73PVS/t7B76fowqxoqfKoAXt0A0oVuQTeWTAVEv4d9yvxtrSh6hx8zeMibCWFyfHPCxdH/qFtDTkOlhoew0A5LGyoy3m80IQeqMAmh9iGiQpQTmGZZASLHUra+06NbdcXtRPBd/PWKVRNDjXaOORgsEYJv5krDRjQ3LiihlKxTLkL+dQyj/qqws7yx482ks0H6bKQZG2g3RyG8Ol7Coo3LPJOQ5LNvuQ9tjyp+WJT/pRd7nrU48tuBH+kqCXXwt5PzdLgbrfz/GqBcyKHkIPmHSMfqb3H5iLecw7hZFq7iO8/E5sakmaJt9w92HRv9S22429mg6VREnmRtuDlZ7XJYb/ADI+6QLpKn86+Idoqtkri+erJtjEkUitA7FokUqW8yKROqXHTsPdXUUoWIJIoMe64F/LUSd8bf7MnsPhbsqnmzNFjPMpImyZHiZypjcxJowIHgO4/NbtoKuJzHI4a7MedlT8hsy/Y16Iw+qOYkby40SWR/lCoSw9wU0AqXG2+aN0pgH/AIigkj/LrUDfx8HqDLcPnztjwXuY1Cq7ezw/KKHep8t8nPTAhBIgsoX80j2/9lFOFAVlvy4ywRpDp/75LUOiQD1cRIOsrFb95QlTVHHM8QcDh8YKoZ1cnJkA/Gw017h0qz6OaPyslLjzAysR27bW/bTFLFHNG0Uqh43FmU9CKFL6fwcXJXIgnlxnJsoDLbX8PiGvuoao8jjcxzc9o4TBhxk+X5p2bj+Yjrf4VweH5qPe2RHDnRubyRlhuJtbcjWUg2pmyFmOPIuOwSYqRG7C4DdlLCD1ZHMA7lUX5pJChiA7STUA+Z/IPkEuBFcJDKtpkV9Gi7mVr/8AZRbjufbG2YGdjvHJFGFUj52IHhBU9Lj21Bz2fBmyQjCs8uM4P1I0G7qEU9vS9WMbg5OTgTkpspxmTjcTtUoBqLbaCDMJkabMnQNkTLsi3sI4sdLW0drb2/poH5MO4rLlLZEYqVDOLgXCDQdTRfP4fkcMtLJBFmxdTIFIYD+YIVIoPM2HIjOiGCUbQsQJdG67jubUe6g1BmZWP/oyvF/SxFHOP9VTRgJnL5y/+Ktg4946GifAPDn8VH58aSNFeJtyg329Dr7DXWR6Z4qc7kRoGP8A4Z0+xr0F/EzMbMiEuNIJE7e8HuYdRQ/msHIafH5LDBebGPijHVkvfShc3DcnxEv1mDIZVTrtHi29zJ2ij/FcnDyUHmJ4ZV0lj7VP8KqLieJQ1ipIvY9R7K6sKytMuobXTsoNOiupVhcHQil/F9PvhcyuVHZsSzkfmQsNBajWbmQYUDZE7bUXoO1j+VfbS3B6pmyeThjZVhxGbbtGraiy7m99QS+p+My8uWCTFhaUIjBytu+4pTkiaNyjqVdTZlIsQafOX5peK8oGIy+aGtZttitvYe+kvkM187MkypAFaQjwjoABYClWKgrdaArq1FYK6q3gcZPl5UUBVo1k13spttGpIvV/nOD+haJsUO8Ug2n8R3j3DtoJfR6n6uduwRgH4n/spvSg3p3jWwsIvKu2eY7mB6hR8ooyvfVjNblDNG6xttcqQrdxtoaAx+poI1MXIRvHlRnbJsF1JHb1FqPXoN6jj4wYpyMtLz22w7Ttdm7r9oFKQvc1y55GdDGCkMX+mCdST1Y26VVwvPyMlcVHscl1DMddQd27v0qtZibAEnuAvVvhp48flMeaXRA1iT2bhtv99Rofl5fleIkEOfGuVGfkmXwlvj0v8KrZHqnHa5jwULn8UpB/YtMuRjQZMTQ5CCSNuw/tFJ3M4cPFzmDGcSCdPGrqGaMbrrtbvpWY6nyc7MaGTMcL5xvDCuioi/NKy+wfLejfp94FTInYbN0aSknsj3SW+y1K7SlYmd5RNPkoAzEkvGAdVN+8AfCjfp3IxpMk4l3YS4wjYPYaoTuVbdlmotF//RubjZV2zbdCQNsi+3sNLfLcLPxcgliZmxyfBKNGU9zWq7gcPyHH84hjRmxQxBm/CYyPxe2miaCKeJ4ZVDRyDa6n21UKPpGUpyMkPZNGT8UN/wCNN7osilJFDodCrC4PwNA+G4R8DlciVgTBGu2Bz1bfY/cNDRbPyGxsSbIQXMS7rHtA6ihQfk/SsEu6XBIhk6+Uf9M+78tVuH5PI4yf+28mDHF0jZv9sn29qH7qu5PORxNh58bE4WTeOde1GXUH3jtrjKfFm5E8bnfqY+UokxZT1jdvwq3ceyij41qtnYOFkoWyccTkDSw8fwOhqDixk4wfj8g72h1x5Tp5kXZ8VOhqTA5WHMjkLAxzY5IniOpUjtFuoohR5VeJhLRY+JPHMdLzMVC+0LqT9tDsZrs8RJCyqRYOEUsNV3ltLA00cxPyfJxnGw8J/pydZXUBmt3bvlFKsiSY85U2EkTa2IYBlPsuKiiWM/8AxS7EKltrubhf6Gb53/oSw76K+n/BmSQPcCaMgo/zWGoLKPDGD2L1oG+S0siZykLOW2zEsAxdtd8a28Atpei3D7F5KAhgVJbbYEhiw1K31t3u3XsoI5L4/mKpBVS0dreE7Tqlm0/wN70NCuQG1cdLbT5QcrZhbeSw+Ym+nbRjlo3GZPF4i07bF2gMWvqFK9Ht2Xsw7LigGYytkvsACqdq7VKCy+G+0k2oIaMcTPwVli5DGIfoZ9zFT71B0qhh4TZrmKORFmPyI527/YrdL0wceskGzG5Xit4QbUyFi3ED+baDf30BrB4/iFCz4cUTdqyL47e4m9U+d4maSVeTwb/VREFkH4gvQr7fZ20WxcTEx1JxoVi36nau2/vqeqilx3IQ8hAJU8Mg0liPzI3aCKlysSDMgbHnXcjfaCOhB7xW3wsaSdchox5yfLIt1b3Era499Tga3oE7Ph57iFKpkSPiA+CVTcD2Ne+2hzZGZlrCM3MIxpXIYsxbbt6lkX7q9BlaNInkmIWNQS5bptHW9ecZuTFNnSZEUYihZvDGg2eDpbTtIqKuNLjPKn0qlMaNlggDaMzMQZZW94/bR2KObkPTKpjsRLtNgptuMbHw/ECl7IxZMSXHyp4HTClJkiiDeJVP4d1tG7aJ+k+SWOZ+PfwxykvBfsbtX4igI+l8vJnxpsbK3b8VgqlvmAN/Cb91q55n03Dlq0+IoiyepUaJJ/A+2jrDYrsi3Yi9hYFiB30Hh9TYLzGDIV8WRW22kGl+4kdKoqekY5IocpHG0rKFKnqCF1piA0qm8/H4buzyxwtKd73YAsbAXt8Krt6m4dDbzi1u1UYj9lEFLUG5HjJ4JxyfGALkJ/qwjpKvbp31exOX43MYJBOrSHohurfY1quGgrcfnRZ+OJ4tD0kQ9UYdVNWDVePCiiy3yofB5otMg6MR8re8VM4ZlZVbaSCAw7CehoFD1dlO+cuN0jhUG3ez63+yl09aOeqMeaHPDynf5ka/qWsGKja1AyKjUdzZE85BmkaQqNqliTYd2tRjrWWrXbUGCpsWRIciKWRBKiMGaM9GAPSoRXVUP2Dy+DnnbjuS6jcY2BBXs91XDLGltzBSTYXIFz7K8+wM6bByBPFYkCxU9CD7qzNz8jOmM07a/hUdFHcKJj0XqtQZceVJD/xJBHOh3LuF1b+VvYaA+leUllL4M7Fyo3xMTc2/EtMwGlVAGfP9TL4Fw1DfnUbwf+q1U24PmuSl87PkEd/zHcVHcqLoKab3FxqPZWmdUF3YKO8m37aGh/HcLicb4orvMws0r9bdwHZXGT6d4vJYv5Zicm5MZ23/AMOoq1kcnx2Ou6XJQW7AwY/YtzQHkPVTuDFx6GO+nnOBu/wrTh1ezuRxeExBiY7GTIA8COxcrf8AE57B7KWYMfO5XLIS8szm7ueijvY9gonx3pvLzW+oz2aGNtTfWV79uvT4004uJjYcQhxoxGg7B1J72Paan1fgS3pbG/t30yH/AJXzic9r/l/p/wDbS/AMvhuQjlniZGibxKejKdDY9DpT9XLpG67XUOO5gD+2qmuceeLJiWeFg8bi6sKlriKGGEEQosak3IUBRf4VJ1qopZ/KYXHgfUyWZvlRRdiPdQvO9Q4M2BKBHKBMrxxlksrNbpuv7aqc0so5OUybIwxAjYDzJ5FsLBFN7fdVBBZJoJQkcEh2iWS8nlSAbtq7ert+KwqLgeMh1x3xusbsr+5luLj3g1ufNmnTHRtDjJsRh1tfcD8K1l4mRiS+VkIUewbae5hcVBUU443qnA+kibJ3NlKtnCr+LoSD01qjwGRLk+oXyIwVSXzHkXuQ6i/xtVPhuBl5NGmMgihVtpNrsTa+g+NOPGcVicdFsgW7t88jas1UdcjjZOVF5MM/06MD5jqLuR3DUWpUzuOwl/8AT+KifMyyR5s/zBLdgt4R7adSLi3Z0qNIo4l2xIqDuUBR91B59HA2PkZOBkOVNrMFK7WePxgFn7OtF+FZJ8+EGJo3Ul9hDeEKvzMTbc2o69OwChHObTy2XbUea1M3ARzYvHNm8hK1mBdQ/VEsNbnXxWFBR9QT7ciZj4fKG2PeN15GVdU1uvh13dL+2gPH4Uudk+RC6rNYsgfTcV1tfvqXJkn5XkmaNS8k72jTuHYPgKMv6VzsRosnBmEk8dmKt4fGPynpb31BGMbDlkXH5mBuPyzpHkxgJHIewn8N6YOPxuSxiIp8hMnGA8DkESju7wasRWzMULlwbSdJIZACAw627CO413j40GMnlwqUTsS5IHuBJtVEvZasrRIA1NqjkyIIV3SypGo7WYD9tGUmtYXRFMkjBEUEszGwAHfQXN9VYGOCuODkSDtHhS/9R/dQSSTm+ekChSYb6KPBCvvJ60VJz/qBs8nFxiVw1Op6GUjtP8vcKl4D06zsubnJaMWaKFurdzOO72UT4v0zi4ZWbJIyMgajTwIfYD1+NGai6hycaHJiaCdA8T9VP7aBS+kVWQS4eU0bKwZA4vtINxZltTHXGQjvjyrGSHZGCkdQSNKqB0nORYkQjmEmVNGNsskMRClh7TpSpzmfj8hnHJgRkUqqsGABLL26X7KsQoxd0kgkdozaSTMlZY0t3qtrn2XNWsH00uaZJ5maKA6Q7U8vc35gjXIQdl+tRQjjONn5PIMURC7Rukduxb295pjj9H4QtvnlbvA2j9xobhYeRxPqGDHY7g5sGXQOjg/vpzWhS1yHpOOOBpsGRzJGNwjex3W18JAGtE/T2VkZXFxyZBLOrMgc9WVehNEpozJC8atsLqVDDW1xa9R42NHiY8eNELRxAKO/3mqjusrD1rBc0RT5LjoORxjBMLdqOOqt3iqXDcGOPjmScpMZWFjbTao6EN76v8jyONx2OZsg9dEQfM57hVDh/UEHIGRJQsEqG6IW+ZO+5trUUC5D0zyAnnlxolMG5jGgYbtvXQUBIs1joR1pmy/VmXBkzwxJFLGjsscmvS+nQ2NLTMWYsdSTcn2mjTkV1XIrdButE1lSY8E2TMsMCGSR/lUUBH0yzLy8IH4gyn3bSf3U9qe6lXgeF5DE5JZsmLZHGreK4IJIsBoaO5vL4HHi2RJ+p1Ea+J/s7PjSM1Hk8LhTuXXfA7akwsVuT27elUJPScMjeLMlI7mAY/beqeT6wnLf8aBEXvclifstUUfq/ODAyxRMnaFup+25ovRFPSGIrXfJkZe4Kq/frRLE4nj8I7oIRvH+43ib7T0+FVOM5/G5BvKsYpuuxuh9xouutXE1sXNdAVFNPDjxmWdxHGOrMbCh49TcPu2+cRra+xrfsoC1bqGDLx8lPMgkWVe9TepuyqjK6vb3VyDYXNV35LBjHjyYl/xr/GoI+Q42HNIcOYJQNjSIBuZO1Nx6fCocfgsaKZJpT5nk/wChEBaOPW9wNSW9pq1Bn4eQ+2CeORvyqwJ+yrPXpRdAeU44ZvOY29bwpEXmPYQjGw+NBDxt8CDy492TnTsYPZEgt9hvengqL3tra3w7qryvhY+ySVo4vKBVCxC7QbXA+yhrXHYUeBhx4y28Au7fmY/M1XRVSDPwp22wzxyN+VWBP2VaBoNnst21T5TOTj8OTIY+IC0Y/M5+UVYmm8seFGkc/Ki9T8ToPjQPLxVyctZubyYo4Y9YsNXsBf8AOxtegFcDxDZsx5DM/wDpkJcltPMbqf8ACO2u+c5Z+TmXj+PBeEH8I1lYdw/KKMZOPHyqjHgzETCUWaHHsWYD8xvoPZareBxeDgC2NGFYizOdXPvNFVOB4VeNiMswDZkg8RGoRfyg/toxesFU8vleOw7jInVWH4B4m/yreiLtZfWh2Lz3FZTBIpwrt0RwUP36UQFBhAIswuO41Rm4bipn3yYylu/UfsIq8ahnysbFUNkSpED0LkC/uoIU4njIiCmLECOh23/berYsBYaAdAKggzcTJJ+nnSUjsVgT9lTqDQdCs0rKrZediYa7smZYgflDHU+4daCxpWxagw9TcPuA85gDpu2G1FIJ4ciMSwOskbdGU3FBIyI1iyhiNRcA2PxrCe+t1FNkQQJ5k0ixJ+ZyAPvoK8nHpLyMWe7XMCFI0t0ZibsT7quCwqgOa4gttGZFc/zWFXUKOoZGDqejKQR9ooO91aYk1lqgy83Ew08zJlWNey/U+4daCYe2tigw9VcOX273A/MUNv40TgyYMmITY7iSM9GU3oEv1PmNk8nIl/08f9NR7R8x+2ghNFOfheHlckMLb38xfar6ihZqNNXrB1rKwVBoV1XIrqqMq/wmRlY/IxtiRiWZ/BsPQhuuvZ76oVe4bPTj89MmRSyAMrW6gMOooH9S1hvsHt4gpuL+y9I/qGMxctOCb7yHHuYdKl5X1BNk5KvhO8EUalVI8LNfqTahEs0kztJKxd21ZmNyaJHBNavWVlRV3iuPzM6YjF8JjsWkJsFv01r0CMSJAC/6kir4tum5gOy/fSRwfODjFkjeLzI5DuupswIFu3rTq2SkWI2U+iBPMI9lr2qxmkbl83Nyst/qwY2Q2WE6CMd1v30PvV/meRXkcwzrH5ahQqg/MQO1qH0aW+O5CfAyFnhPTR0PysO416DiZKZeNHkRG6SDcP4Uk+nDxozH/uOzZs/T8z5N1+3s6U64k2LNHfEZGiQlf0/lBGthbSkZpZ9T8rPJlPgxsVgisHC6b2tc7vYKXSaZfVK8WQJIWX64t4whvde0vbtpZNFiRGcMpS4e427et+y1q9C4hs84Kf3Bds47fxFewtbtrz/FyWxcqLIRQzRMGCt0Nqe+I5U8pE8wi8pEIUXbcS1rnsGlChvqXls7HcY0CtDGwv5/a/eFPZb7aU3dmbcxLE9p1NNXqbk8GXE+kjYSTrJrYHwbb31+6lM0I2GINx1HQ06el+WnzImxsgMzwjwz2JDD8rH81JNPPAcjxzYmPh47WnCXkjCm+4DxMTa1CuvUHNNgQiDHP/Jk/F1CDv8AeeykmaWSWRpJGLyMbszG5Jp45/kMbExGini85pwwjUjw39p7LUiNQjqKaSGQSxMUkXVXU2Ipx4D1AM8jFyQEyQPC40EluunYaSidKfeEw+LTEhfFCSOVVmlNi+49b9o1oVX9Sc02In0eMSuRILu4/Ah7vaaTWYkknUnqa9Cz+O4rJ3tmJGHYaykhXA773rz6YIsrqjbkViFbvAOhoRxemr0ny0rucCdiwA3Qk6kAdVv+ylSmz0rn8esCYe0JmMxudv8AqdSDu9goCHP8rJx8AWBCZpej2JRB3k9L9wpJnnlmkMkzmSRurMbmnrluVxcBNuUjOJVO1QAVYjqDrp1pBcgsSBYE6DuoMV2Rgykqw1BGhFOPprnXzP8AhZRvOq3ST86jsPtFJdN3pbB476ePLDCTNO7cC2setrBfd20BTm+V/tuJvSxyJbrED39rH3UiZE8s8rSzOZJG1ZmNzXoeThYOWV+qiSUgEJu6gdtqRebx8XF5GWHEa8S2Nr32kjVb+yhFC9FvT3Jy4WdHGCTBOwSROy50DD2ihBo76c5Pi+PWRspD9QT4JAu7w2+Ud2tA35+UMTElntuMalgveeyvPs3NycyYzZDl2PQdijuUdlegz5UUGOcma6RKu5ri5APeBSJzeTh5We82Gu2NgLm23c3a1uyhA+9EOJ5fJ4yYPEd0R/1IT8rD9xodRn09x/G5rTNnS7fKsVj3BNwPVr+yinDJ5GOHjW5BQWQoHRe0lvlH315/lZU2VM087l5GOpPZ7B7K9CjbDxMJWUhMSNAVY3KhOw63pR9TS8VNLFNgOjSNcTBBYaW2k6DWiQDJq9xfLZHGzeZEd0bf6kR6MP3GqF617qKe8rjsLnoIMrc0d1urgDdtPVTfuNA/UHBYnG48c8EjXZthRyCToTcaCjWDy/CYuDjxpOiAIo2a7gfxbgOmtC/WMEe7HzEcEygoVve4GoYUQsmsHWsrBUVoV1V5OB5ZhcY5I96/xrv+w8ve30r+/T+NUDrVlX34bk0O1sdr/A9arJiZD5H0yxsZ7lfL7bjrQQisokPT/Ln/AO2b7V/jXTenuXH/ANuT7ip/fQCzXNXn4jkkZVbGkBc7VFuptf8AdVgem+XtfyP+pf40AoUWyvUOdlYQw5AgSyqzKDuYL361BJwvKRfNiyWHaBuH/Teq8mLkwi8sTxjvZSB99BCTWVLFi5MwJhieQA2JVSw+6pf7ZyPX6WX/ACN/CoKy0a4v1BJxuG+KIhISxeNibbSR2jt6UMbAzUF2x5QO8o38KjCPfaFO7usb1UdSSNJI0jm7OSzH2k3NcV0UdTZlKnuItWgjtoqk+4XoNUY4bnv7ZjTQGIyFzvjINgGtbX2aUHKkGxFj3GsFBJJI0js7m7OSzH2k3NRmpPLktfa1u+xtXBU91Fc0S4Hko+NzGmmUtG6FG29Rcg3H2UPCOxsqlj3AE135MymxjYHuKmiDHqHm4OSEUWOrCOO7FmFiWIta3soGa7KMNCCD3WrllINiLH20HFFOC5VeLyHleMyJIu1gpsRY3HXSqgwM0gMMeUhhdSEbUd/SuxxvIH/7aX/I38KCTl+Sfkstshl2rYLGnXaoqgatnjeQAJONLYdTsb+FRnBzQu848oXv2Nb9lBBU+BlHDzIckDd5ThiO8do+yozG46qR7wa0UYdQR76KK89zSco8axIUiiuRutuLN16e6hFbsSdK3sa/Q391BxVnjsv6LNhytu4RNcr0uOhqHY3ca2kUsjbI0Z2/KoJOnsFEFue5mPkZIhjhlihBsToSzdf2UGNWBg5pGmPL/kb+FaOFljUwSD/A38KCvWAkHTsqWXHnhCtLG0Yb5Sylb+69dRYeVMnmRQySJe25VLC/vFAZ5P1IM3jExVRkme3nt+Hw/l99ADVg4OYBrBKP8Dfwrl8LLQAtBIAel0YfuoqCsA767EMzMVWNiw6gKSR762YJk+eNl96kftoDOV6kkyOMXBEWxiixySXuCq2+Ue21A2rra3cfsrlqDmsrpIpH1RS3uBP7KkGLknpC5/wt/CghrCxIAJJA0HsqVsadBd4nUd5Uj91RGoNVsDWtqpY2Gp7hUq42QekTn/Cf4UDbwGeMvDUE/qxeFx39xonmZsGDB5899nQAakk91Jnp7M+mzlBNklG1v3ffTZy/HNymKkasI5IzdS3TuINq0izDLBmY/nwMSkigqQOlrjpSvxkZb1CQNSrG5Gl+xjTPx+IMHDXFUlvLXVv5mJuftoBwCb+cnka4KFyT1tc2qA5ncniYE8MMtwZzYW/COm4+y9XCLe+h3I8OnIZmNkM+1ID417WAO4W+NEZGVFZ3NlUFmPsGpqoX/UXJ/TZWJCh1jcTS+75QPsvR1NrKGXVSLg+yvPM/LbMypcl+sjEgdw7B9lN/pnP+r49Y2P6kH6be4fKfsqLU3I8tjcdJDHMrMZj+H8K3tuNcepFB4abtAKEf5hXHO8LLyMkEkLhWTwuG/KTe491S+oVtw0467Qgv7mWqip6SUjjpGvo0psPcFopjZ+LlSzRQPukgbbICLey47xVP0um3iUJHzO7ffb91a4Xh8jBysrJnK/qkrGFN7gtuuaAuL0vQ8yp9SPAbCBh9Oh/nU3v8W0ozn5a4OHLkt+BfCO9joo+2vOzK/m+bf9Tdu3du6970I9N2KdSAfeL1AmXhHJbESRPqF1aMaHvrnjsxc3ChyR/uKCw7mGjD7aHYvFZMXqOXMK/8YhnVz2lxbb8KAf6zUebi6C5Rze3tFMOHiwRY0KiJFIjT8I67R7KC+sUucNva6/8AdNMRW8e0aErYHu0tQcQZGNkBvp5FkCHa2w3APdW38pQXYAKoO4kDoNSaD+m+LzME5L5I2b7Ki3Bvtv4tK79TZv03HGJT+pkHyx/T+M/Zp8aClwfLDL5nKBUKMhQYgBawi6D/ACmmZRXm+BlHEzYckGwjcFrfl6MPsr0eN1dQ6m6tZgR2g0WurKT0BIpR9Xwg5+PtFmkj2n/NYftq3wv1f9/zfM3bPH5l+l93g/7Kz1HH5nLcanYxA/6xQH0BRFQmwRQL+4V2pVhdTcHoRqKFepjMOKlMRI8S77fkJ1v7Kz0ykqcRGJQRuZmQH8hOlEXOSzFwsKXJbqi+EHtY6KPtqp6f5JuQwQ0pvPEdkh6X7Q3xFBvV+cXyI8JT4YhvkH87dPsFVvSmZ5HImAnwZC7f8S6r++opyyJoMaBp5yFiQXYnX2VDjz4fJYrtARLGbxncvQ27Qw9tRc3iS5vGSwwi8t1dV/NtN7VU9Mcdl4UEz5QMZmYbYj1AX8R996qBfpOEDPyQ4BaOO2vYdwB/ZTPJPjRSpFI6pJKbRqbbmPspf9OEf3rPA0BDm3/zKtctxmXlcvhSxKTClt8nYmxtxv76KN7R3D7BQvL5eHG5bHwFUXkIEz9Nu/5APj1oq7KoZ2NlFyT7BrXnOfmPk50mVezM+5D3AfL+yiPRgT21oSqZDHvBkADFQdQD0Nqr8dljNwocof7i+IfzDRvvoPhY+V/+UZMpVvKG/c5BttYeAXoO/WK3wIT3S9fepq36dTZw+MPzBm/zMTUfqtA3Elu1JEI+Nx++p+DBPEY1upj0++gIq6tfawJGhsb2PtrZveln0qsyZeYr3AUAOP59x+/rTFNMIIJZ26RqW+wXoAEHIpH6qyIPlSYLDfvkjFx+8Uw9eteZSTyNOZ936pbfu/mvuvXovH5aZuHDlL0kUFh3MNGH20WpwFIIIB94pO9XY6RZ0UiKFEkdzbTUE0Q4nkcyXnMjFnclG8wBD0TYdLd2lcesowY8WTtBZfuvRBvjdOPxm7TEhY9LkqNashr9Kp8e4/teM/UCFSfgtD/T3J5fIT5RmI8pdpjUD5Lk+EH3UBwgHQ60vYGVi5HPZsBjjKWtF4F6xGzHp23oty2V9HgTTg2ZVIT+pvCv3mkTj8xsPPhyb3CN4/ap0b7qix6EkUS6qiqe8ACphUasrAMpurC4PsNBeX5PPx+YxsXGsY2CXQgeMu203PWqhLidkcOuhU3FejYGSuVixzr0kUH49tebim70nmb8ZsVj44TdR3q38DUWmIk3AB6kXPdY3pf9OqV5HOUdNxufYGP8aYUVGKlx06fHSgnARtHnZ4IsA5A+LGqDgoP6nzRj8eYVP6mQdg/pGrH91GLdbdlI/qTNGVyLBDeOEeWvdcfMftqAQxop6bzvpORRWNop/wBN/eflP20KNYCQbjQjoaK9Q61R51N/E5I62S/+Ug1nEZozcCKc/ORtk/qXQ/xqbkAWwMgAXJiew+BqsoOAXZxGKO9L/aSaInSqPCa8Tif/AAxVrKyExseTIk+WJSx+HZQK/q7kN8qYCHwxWeX2uRoPgKWamyp3yJnnkN3kYs3vNQVFNno7NBjmwmPiU+bGPYdG++mgGvNuLzDg50WSOiN4x3qdGH2V6QjBlDKbhgCp9hqxKAesFvFhn/zSPtApgA0HuoR6li34uM5FwmRHf3NpRg9aDQHfSR6qyxPyRiU3THUJb+Y+Jqb+Ry1wsKbJPVFO0d7HRfvrziWRpHZ3O52JZj3k60WOKePS+d9TxqxMbyYx8s/09V+6kajXpXLMHJiInwZAKH+oeJaFPPZQTm0/9T4p/wDzSv3g0a7KocljNNPgSD/ZnBb3EH+FEX2AJ11B6itOyojO2ioCSe4DWujQj1NmfS8Y6A2kyT5ajtt+I/ZQJedktlZUuS3WVi3wPQfZUMMzQzJMnzRsGHvBvWmrmor07FnTIgjnj+SRQ6/EVPfUUuekM3zsR8Rj48c3X+hv4GmMVUK/p1CnOZ6k6qHH/wDJTONBagfCwbOa5VzpZwAP6iWo5QoP6nzBjcc0am0mQfLH9PVvupFY60a9T531PItEpvHjfpr7W/EftoGetFhp9G52s2A50P6sQ9vR/wB1NY6WrzTj8tsLMhyV/wBtgSO9ejD7K9JjkSRFkQ3RgGU94PSiUN9Rpv4ef+Xa32MKl4QW4rEH/lj7675aPzONyk74mP2C/wC6u+OTy8DGS1isSD/pFBMsUcZcooUyHc5Atua1rmhXqjM+m4togfHkHy/8PVqL+2kj1PnHJ5Fogf08fwKOzd+I/bQgI1NPo3Muk+Ex1FpYx7D4W/dSq1W+KzWwc6HJB8KtZx3odG+6or0KLFgjlkmSNVll+dwPE3vNCvVsO/jVl7Y5FPwYFaMowIBBuDqD7DqKo87H5vEZK9Sq7v8AKQ1VGcNrxOID/wCEP31NhYONgxmPHTYrMWbtJJ9tc8WhTjsRT1ESfeL1a99Atescuyw4an5ryP8ADwr++lM0Q5rM+s5GaYG6X2R/0roKH1Fh69NZf1PFRhjd4CYm9w+X7qIvx+LNlR5sibp4RZDfQdt7eylH0lm+RnHGY+DJFh/Wuo+3pTuvSqleVCiHDZpwc+OU/Ibq471ah4roGxqK9LidXUMpurdDXGPAIp8iW3+syt9igftod6cyzk4ALG7xnYw93Q/ZRYGqKnL5owsCWb8ZG2Md7NSA5JJJ1J6mmH1Zl754sVTpGN7/ANTdPupcNQc1lZWUUzej8y0suGx0ceYnvGjfdTZYMCDqDoR7DXm2Blvh5cWSnWNrkd47R9lejQypLGkqG6OAyn2EUSuMHHOLiRY5N/LG0Ed1zag/q7L8rDjxVPinbc39Cf8AbR+9IfqHN+s5KQqbxxfpp3WXqfiaECmNc1s61qitinv0xmfU8WiE3kgJjb3DVfupEFG/S2d9NyIhY/p5PgP9Q1U/uolOOdj/AFOMY+0PG4/wurVZPWtA1Hkzrj48k7/LGpY/4ReqhZ9X8hudMCM6J45veflH76VianyZ5MiZ55Dd5GLMfaagNRWqkhlaGVJU0eNgy+8G9R1uqr0zEyEysePIT5ZVDD49nwqUgG3sNLPpDPLRyYLn/T/Uj/pPzD7aZ6Ms9lJPqjO+p5ExIbx4w8sd27q5+3Smjmc/6Dj5J1/1T4Iv6m7fh1rz52JJJNydSaLEZrmtmsqKJcBnfRcnFIxtG58uT+lu34GvQhXlYr0HgM/63jYpGN5Y/wBOX3r2/EVUq3j4ghy8rJ//ALGw/wCRbGus3JXDxJslv9pC3x7B9tTilv1hnBII8FD4pD5kn9K/KPiaIUpXZ2Z2N2YksfadTUddNXNRpgp09J8h5+EcVzeTGPh7zG3T7DpSXV7h884GfFPfwX2yjvRuv2daqPRJEWSNo26OCp9xFqwABQB0A0rQYEAg3B1BrdEVuSzBhYMuSeqDwDvY6KPtrzqR2d2ZjdmJJPeTTL6uzbvFgodFHmSe86KKVzUWNGsFaNZRT16YzvquNWNjeXH/AE2/p/AfsorPEJ4JIW0EilT/AIhakn0xnfS8ksbG0WSPLa/5vwH7aeQdKrNc48ZigiiJuY0VLj+UWof6gz/ouOfabSzfpx9+vU/AUUpH9Tch9XnmNDeLHvGvtb8R+2hAZq4NbJrmo0khleGVJYzZ0YMp9oN69Lw8lMnGjyE1WVQw+IrzEU4+j87zMaTCY+KE70/pbr9holJwrdaFdaUUX9O5px85YixWOYhT3buy9OUs0cMLSvokaln9wrzdSQQQbEagimbk+UM3AwMD+pk2ST/5fzfaRRAHMyHyciTIf5pGLH2dwqsa6auTRWVlZWUGCnL0pnCfDbEc/qY58PtRun2Gk0UQ4bNODyEUpNoydkn9Lfwohx5vOOFx8kqm0jfpx/1N2/AUgsaO+qs7zstMZDdIFubfnfX7hQA0GjWq3WqK3XUbsjq6mzKQQe4iua3QekcbmLmYUOQOrr4h3MNGH20L9WZvlYa4inxzm7f0Lr+2qPpDO2tLhSHwkebHfvHzj7NaF81nnOzpJQbxqdkf9K/x61UD2riujWqitVutVuqLXGZrYObHkrqFPjHep0YV6NE6yIrqbqwBB7wa8vFOvp3kkbiS07WGHdXY/lAuv3aUSqHrHLD5EOIvSJd7f1P0+4UsmrWflvmZUuS+hlYtbuHYPsqqag5rKysorVHfSmccfP8Ap2P6eSNtv5xqp/dQKpIZHikWSM7XQhlPcRqKD1AEWrz7msz6zkZ51N03bYz/ACL4RTDzXMf+jQvEdsmco96rbx/wpPY1Ujk1qs7ayorKwVlZQO3prkfqsFYXN5cfwH2r+E0YlmSGJ5nNkQFmPsGppE4DM+l5GPcbRyny3v016H7aO+qc8xwJhobNN4n/AKAenxNVks5uS+XkyZD/ADSMW9w7B8BVY9a6Y1xUaarBWVgoOlJUgg2I1Br0Xi8sZuDDk/iZbP8A1ro3315wKavR2WLT4bHXSVB/0t+6iUd5fPXAwJJ7+MjbGO926fZ1rzx2JJJNyepo96rzvOzBiobx448X9bdfsFL5oRya1WzWUVgq/wANnnj8+PI6p8sg/kbQ/Z1qhWx1oNCt1lZQbFSHzPLF7+Xc7b3237bVlZQcVqsrKDDWVlZQYK2KysoO5PM3nzL7+3d16e2uDWVlBo1lZWUGCt1lZRE2N9R5o+n3ebY22fNax3fdUZrKyqNGtVlZRWq3WVlBlTxfUeRL5e7yLr5tvlv+HdWVlEQmuTWVlRWqysrKDRrYrKygsy/VeTD527ytp8jd02312/Gq5rKyg1WVlZQZWVlZQdL7Kuch9f5w+v3edsW2619nZ0rKyqioa4rKyorVYKysoMq/wv1f9xh+jt599N3y2t4t3stWVlBDl+d9TN53+rvbf/VfWq5rKyg1WVlZQZWDrWVlB//Z';
+        let modelBatikAI = null;
+        let embeddingBatik = [];
+        let aiModelPromise = null;
+
+        async function muatModelBatikAI() {
+            if (modelBatikAI && embeddingBatik.length) return;
+            if (!aiModelPromise) {
+                aiModelPromise = (async () => {
+                    if (!window.tf || !window.mobilenet) throw new Error('Pustaka AI belum berhasil dimuat. Periksa koneksi internet.');
+                    modelBatikAI = await mobilenet.load({ version: 2, alpha: 1.0 });
+                    const refImg = new Image();
+                    refImg.src = REFERENSI_BATIK.trim();
+                    await new Promise((resolve, reject) => { refImg.onload = resolve; refImg.onerror = () => reject(new Error('Gambar referensi batik gagal dibaca.')); });
+                    // Augmentasi: buat 20 variasi sudut dari SATU foto referensi Batik Gedog Siwalan.
+                    // Label referensi di UI tetap umum ('Batik'); hasil >85% mengindikasikan Batik Gedog Siwalan.
+                    // Rotasi bukan pengganti dataset foto asli dari banyak motif.
+                    const sudutReferensi = [-45, -40, -35, -30, -25, -20, -15, -12, -9, -6, -3, 0, 3, 6, 9, 12, 15, 20, 25, 30];
+                    embeddingBatik = [];
+                    for (const sudut of sudutReferensi) {
+                        const kanvas = document.createElement('canvas');
+                        kanvas.width = 224; kanvas.height = 224;
+                        const ctx = kanvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 224, 224);
+                        ctx.save(); ctx.translate(112, 112); ctx.rotate(sudut * Math.PI / 180);
+                        const rasio = Math.min(224 / refImg.width, 224 / refImg.height);
+                        const w = refImg.width * rasio, h = refImg.height * rasio;
+                        ctx.drawImage(refImg, -w / 2, -h / 2, w, h); ctx.restore();
+                        const tensor = modelBatikAI.infer(kanvas, true);
+                        embeddingBatik.push(Array.from(await tensor.data()));
+                        tensor.dispose();
+                    }
+                })();
+            }
+            await aiModelPromise;
+        }
+
+        function hitungKemiripanKosinus(a, b) {
+            let dot = 0, normA = 0, normB = 0;
+            for (let i = 0; i < a.length; i++) { dot += a[i] * b[i]; normA += a[i] * a[i]; normB += b[i] * b[i]; }
+            return dot / (Math.sqrt(normA) * Math.sqrt(normB) || 1);
+        }
+
+        async function pindaiBatikAI() {
+            const video = document.getElementById('webcam');
+            const status = document.getElementById('ai-scan-status');
+            const hasil = document.getElementById('ai-scan-result');
+            const error = document.getElementById('error-result');
+            const tombol = document.getElementById('btn-ai-scan');
+            error.classList.add('hidden'); hasil.classList.add('hidden'); status.classList.remove('hidden');
+            if (!video.srcObject || video.readyState < 2 || !video.videoWidth) {
+                status.textContent = 'Aktifkan kamera terlebih dahulu dan tunggu sampai gambar kamera terlihat.';
+                return;
+            }
+            tombol.disabled = true; tombol.textContent = '⏳ AI sedang menganalisis…';
+            status.textContent = 'Memuat model visi komputer dan membandingkan pola dengan referensi batik…';
+            try {
+                await muatModelBatikAI();
+                const tensor = modelBatikAI.infer(video, true);
+                const embeddingFoto = Array.from(await tensor.data());
+                tensor.dispose();
+                const similarity = Math.max(...embeddingBatik.map(ref => hitungKemiripanKosinus(embeddingFoto, ref)));
+                // Skor kemiripan terhadap variasi sudut satu foto, bukan probabilitas akurasi.
+                const persen = Math.max(0, Math.min(100, similarity * 100));
+                const nilai = persen.toFixed(1);
+                const kesimpulanJudul = document.getElementById('ai-conclusion-title');
+                const kesimpulanTeks = document.getElementById('ai-conclusion-text');
+                const judulHasil = document.getElementById('ai-result-title');
+                const skorAngka = document.getElementById('ai-score-number');
+                const skorBar = document.getElementById('ai-score-fill');
+                skorAngka.textContent = nilai + '%';
+                skorBar.style.width = nilai + '%';
+                if (persen >= 85) {
+                    judulHasil.textContent = 'Batik Gedog Siwalan (indikasi awal)';
+                    kesimpulanJudul.textContent = 'Terindikasi Batik Gedog Siwalan';
+                    kesimpulanTeks.textContent = 'Skor kemiripan visual mencapai ' + nilai + '%. Pola ini terindikasi mirip Batik Gedog Siwalan, yaitu motif batik Gedog Tuban yang mengangkat inspirasi siwalan sebagai kekayaan alam dan identitas lokal Tuban. Hasil ini masih berupa indikasi dari prototipe dan belum membuktikan identitas motif secara pasti.';
+                    hasil.classList.remove('hidden');
+                    error.classList.add('hidden');
+                } else {
+                    hasil.classList.remove('hidden');
+                    judulHasil.textContent = 'Belum terkonfirmasi';
+                    if (persen < 40) {
+                        kesimpulanJudul.textContent = 'Kemiripan sangat rendah (0–39%)';
+                        kesimpulanTeks.textContent = 'Pola sangat berbeda dari referensi batik. Motif belum dikenali.';
+                    } else if (persen < 60) {
+                        kesimpulanJudul.textContent = 'Kemiripan rendah (40–59%)';
+                        kesimpulanTeks.textContent = 'Ada sedikit kemiripan visual, tetapi belum cukup untuk mengonfirmasi kecocokan dengan referensi batik.';
+                    } else if (persen < 75) {
+                        kesimpulanJudul.textContent = 'Kemiripan sedang (60–74%)';
+                        kesimpulanTeks.textContent = 'Beberapa ciri visual mirip, tetapi hasil belum cukup kuat untuk mengonfirmasi kecocokan dengan referensi batik.';
+                    } else {
+                        kesimpulanJudul.textContent = 'Kemiripan tinggi (75–84%)';
+                        kesimpulanTeks.textContent = 'Pola cukup mirip, tetapi masih di bawah ambang 85%. Hasil belum dapat memastikan kecocokan dengan referensi batik.';
+                    }
+                }
+                status.textContent = 'Analisis selesai. Skor menunjukkan perkiraan kemiripan fitur visual MobileNet terhadap satu foto referensi batik yang dibuat menjadi 20 variasi sudut (−45° hingga +30°), bukan probabilitas akurasi. Variasi sudut tidak menjamin akurasi meningkat untuk semua kain.';
+            } catch (err) {
+                status.textContent = 'Scanner AI belum dapat dijalankan: ' + (err && err.message ? err.message : 'terjadi kesalahan') + '. Pastikan internet aktif dan halaman dibuka melalui HTTPS atau localhost.';
+            } finally {
+                tombol.disabled = false; tombol.textContent = '🔍 Pindai Motif Sekarang';
+            }
+        }
+
+        function ulangPindaiAI() {
+            document.getElementById('ai-scan-result').classList.add('hidden');
+            document.getElementById('error-result').classList.add('hidden');
+            document.getElementById('ai-score-fill').style.width = '0%';
+            document.getElementById('ai-scan-status').classList.add('hidden');
+        }
+
+        function simulasiScanError() { pindaiBatikAI(); }
+
+        function cariMotif() {
+            const input = document.getElementById('searchBatik').value.toLowerCase().trim();
+            const items = document.querySelectorAll('#gedogList .gedog-item');
+            items.forEach(item => {
+                const judul = item.querySelector('.folder-heading strong, h4');
+                const namaMotif = judul ? judul.textContent.toLowerCase() : item.textContent.toLowerCase();
+                item.style.display = namaMotif.includes(input) ? '' : 'none';
+                if (input && namaMotif.includes(input)) item.open = true;
+            });
+        }
+
+        // Render data budaya segera setelah elemen HTML tersedia.
+        // Ini dibuat terpisah dari inisialisasi salam/kamera agar error kamera
+        // atau fungsi lain tidak membuat daftar kosong sampai pengguna mencari.
+        function renderSemuaDataBudaya() {
+            renderMakstub(daftarMakstub);
+            renderMinstub(daftarMinstub);
+            renderWistub(daftarWistub);
+            renderKastub(daftarKastub);
+        }
+
+        renderSemuaDataBudaya();
+        perbaruiSalamWaktu();
+        perbaruiSubjudul('beranda');
+        // Periksa berkala agar sapaan mengikuti waktu perangkat secara real-time.
+        window.setInterval(perbaruiSalamWaktu, 60 * 1000);
+
+        window.addEventListener('load', function() {
+            perbaruiSalamWaktu();
+            perbaruiSubjudul('beranda');
+        });
+    </script>
+</body>
+</html>
